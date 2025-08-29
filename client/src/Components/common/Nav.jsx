@@ -1,32 +1,36 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // hamburger & close icons
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X } from 'lucide-react'; // hamburger & close icons
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const navItems = [
     {
-      name: "Menu",
-      navUrl : "/menu"
+      name: 'Menu',
+      navUrl: '/menu',
     },
     {
-      name: "Catering",
-      navUrl : "/catering"
-    },{
-      name: "Location",
-      navUrl : "/location"
-    },{
-      name: "Rewards",
-      navUrl : "/rewards"
-    },{
-      name: "Gifts",
-      navUrl : "/gifts"
-    },{
-      name: "News",
-      navUrl : "/news"
-    }
-  ]
+      name: 'Catering',
+      navUrl: '/catering',
+    },
+    {
+      name: 'Location',
+      navUrl: '/location',
+    },
+    {
+      name: 'Rewards',
+      navUrl: '/rewards',
+    },
+    {
+      name: 'Gifts',
+      navUrl: '/gifts',
+    },
+    {
+      name: 'News',
+      navUrl: '/news',
+    },
+  ];
 
   return (
     <nav className="w-full bg-gray-900 text-white shadow-md sticky top-0 z-50">
