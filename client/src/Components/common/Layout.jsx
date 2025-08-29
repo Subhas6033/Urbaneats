@@ -5,10 +5,12 @@ const Layout = ({
     children
 }) => {
   return (
-    <div className={`w-full h-auto ${className}`}>
+    <div
+      className={`w-full h-auto text-emerald-700 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 ${className}`}
+    >
       {children}
     </div>
-  )
+  );
 }
 
 export default Layout
