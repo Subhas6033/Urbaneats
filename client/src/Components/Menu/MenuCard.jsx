@@ -3,7 +3,7 @@ import { IndianRupee, Plus, Minus, ShoppingCart, X } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addToCart, updateQuantity, confirmOrder } from '../../Slice/OrderSlice.js';
 
-const MenuCard = ({ image, name, price }) => {
+const MenuCard = ({ image, name, price, description }) => {
   const [quantity, setQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -57,9 +57,10 @@ const MenuCard = ({ image, name, price }) => {
     <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-6 flex flex-col items-center">
       {image && (
         <img
+          loading='lazy'
           src={image}
           alt={name}
-          className="w-full h-48 object-cover rounded-xl mb-4"
+          className="w-full h-80 object-cover rounded-xl mb-4"
         />
       )}
       <h3 className="text-xl font-semibold text-emerald-600">{name}</h3>
@@ -67,6 +68,10 @@ const MenuCard = ({ image, name, price }) => {
       {/* Base Price */}
       <div className="mt-2 text-gray-700 font-medium flex items-center gap-1">
         <IndianRupee className="w-4 h-4" /> {price}
+      </div>
+      {/* Dish Description */}
+      <div className="mt-2 text-gray-900 text-sm text-center line-clamp-3">
+        {description}
       </div>
 
       {/* Quantity Controls */}
@@ -96,7 +101,7 @@ const MenuCard = ({ image, name, price }) => {
       ) : (
         <button
           onClick={handleAddToCart}
-          className="mt-4 flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
+          className="mt-4 flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-red-600 hover:cursor-pointer transition-all ease-in-out duration-500"
         >
           <ShoppingCart className="w-4 h-4" /> Add to Cart
         </button>

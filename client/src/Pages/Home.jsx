@@ -25,31 +25,37 @@ const Home = () => {
       image: './popular dish/Crispy Spring Rolls.jpg',
       name: 'Crispy Spring Rolls',
       price: 180,
+      description: 'Golden fried rolls stuffed with fresh veggies.',
     },
     {
       image: './popular dish/BBQ Chicken Pizza.avif',
       name: 'BBQ Chicken Pizza',
       price: 350,
+      description: 'Smoky BBQ chicken with melted cheese on a crispy base.',
     },
     {
       image: './popular dish/Paneer Butter Masala.webp',
       name: 'Paneer Butter Masala',
       price: 260,
+      description: 'Soft paneer cubes in rich buttery tomato gravy.',
     },
     {
       image: './popular dish/Tandoori Momos.jpg',
       name: 'Tandoori Momos',
       price: 200,
+      description: 'Spiced momos roasted to perfection in tandoor.',
     },
     {
       image: './popular dish/Gulab Jamun.webp',
       name: 'Gulab Jamun',
       price: 90,
+      description: 'Soft milk dumplings soaked in sweet syrup.',
     },
     {
       image: './popular dish/Mango Lassi.png',
       name: 'Mango Lassi',
       price: 120,
+      description: 'Refreshing mango yogurt drink, smooth and creamy.',
     },
   ];
 
@@ -150,36 +156,37 @@ const Home = () => {
 
       {/* Popular Dishes */}
       <section className="px-6 md:px-12 lg:px-24 py-20 text-center">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-3">
-              <span className="p-3 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 text-white shadow-lg">
-                <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8" />
-              </span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-                Our Popular Dishes
-              </span>
-            </h2>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-3">
+            <span className="p-3 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 text-white shadow-lg">
+              <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8" />
+            </span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+              Our Popular Dishes
+            </span>
+          </h2>
 
-            {/* Underline */}
-            <div className="mt-3 w-28 h-1 bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 mx-auto rounded-full shadow-md"></div>
-          </div>
-          {/* Menu Items  */}
-          <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
-            {popularDishes.map((dish, i) => (
-              <MenuCard
-                key={i}
-                image={dish.image}
-                name={dish.name}
-                price={dish.price}
-              />
-            ))}
-          </div>
-          <Button
-            className="mt-12 px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg transition-transform hover:scale-105"
-            onClick={() => navigate('/menu')}
-          >
-            View Full Menu
-          </Button>
+          {/* Underline */}
+          <div className="mt-3 w-28 h-1 bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 mx-auto rounded-full shadow-md"></div>
+        </div>
+        {/* Menu Items  */}
+        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
+          {popularDishes.map((dish, i) => (
+            <MenuCard
+              key={i}
+              image={dish.image}
+              name={dish.name}
+              price={dish.price}
+              description={dish.description}
+            />
+          ))}
+        </div>
+        <Button
+          className="mt-12 px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg transition-transform hover:scale-105"
+          onClick={() => navigate('/menu')}
+        >
+          View Full Menu
+        </Button>
       </section>
 
       {/* Offers Section */}

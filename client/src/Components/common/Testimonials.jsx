@@ -31,7 +31,7 @@ const TestimonialCarousel = ({ images = [] }) => {
           swiper.navigation.init();
           swiper.navigation.update();
         }}
-        className="w-[95%] h-96 relative"
+        className="w-[90%] h-96 relative"
       >
         {images.map((url, index) => (
           <SwiperSlide key={index}>
