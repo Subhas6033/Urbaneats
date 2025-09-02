@@ -20,6 +20,7 @@ import {
 
 import { Provider } from 'react-redux';
 import { store } from './Store/Store.js';
+import ErrorFallback from './Components/Err/ErrorBoundary.jsx';
 
 const router = createBrowserRouter([
   {
@@ -80,8 +81,15 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <ErrorFallback
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        window.location.reload();
+      }}
+    >
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </ErrorFallback>
   </StrictMode>
 );
