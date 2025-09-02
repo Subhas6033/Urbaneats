@@ -10,13 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.12",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.542.0",
+    "motion": "^12.23.12",
     "prettier": "^3.6.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.8.2",
-    "tailwindcss": "^4.1.12"
+    "swiper": "^11.2.10",
+    "tailwindcss": "^4.1.12",
+    "typewriter-effect": "^2.22.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

@@ -16,6 +16,9 @@ import {
   Rewards,
 } from './Pages/index';
 
+import { Provider } from 'react-redux';
+import { store } from './Store/Store.js';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -67,6 +70,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>
 );

@@ -25,13 +25,13 @@ const Footer = () => {
   const navigate = useNavigate();
 
   return (
-    <footer className="w-full bg-orange-400 text-slate-50 pt-12 pb-6">
+    <footer className="w-full bg-emerald-800 text-slate-50 pt-12 pb-6">
       {/* Main Grid */}
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Brand / About */}
         <div>
           <h2 className="text-2xl font-extrabold text-white mb-3">
-            Urban <span className="text-emerald-500">Eats</span>
+            Urban <span className="text-green-300">Eats</span>
           </h2>
           <p className="text-sm leading-relaxed">
             Serving fresh, delicious, and premium meals right at your doorstep.
@@ -47,7 +47,7 @@ const Footer = () => {
               <li
                 key={index}
                 onClick={() => navigate(links.url)}
-                className="hover:text-emerald-400 hover:cursor-pointer hover:underline transition-all ease-in-out"
+                className="hover:text-slate-400 hover:cursor-pointer hover:underline transition-all ease-in-out"
               >
                 {links.name}
               </li>
@@ -64,13 +64,13 @@ const Footer = () => {
 
           {/* Social Icons */}
           <div className="flex gap-4 mt-4">
-            <a href="#" className="hover:text-emerald-400">
+            <a href="#" className="hover:text-slate-400">
               <Facebook size={20} />
             </a>
-            <a href="#" className="hover:text-emerald-400">
+            <a href="#" className="hover:text-slate-400">
               <Instagram size={20} />
             </a>
-            <a href="#" className="hover:text-emerald-400">
+            <a href="#" className="hover:text-slate-400">
               <Twitter size={20} />
             </a>
           </div>
