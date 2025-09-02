@@ -1,22 +1,66 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { OrderCard } from '../Components/index';
+import {ShoppingBag, Truck } from 'lucide-react';
+import {Link} from 'react-router-dom'
 
 const Order = () => {
   const orders = useSelector((state) => state.order.confirmedOrders || []);
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
       <h1 className="text-3xl font-bold text-emerald-600 mb-6">My Orders</h1>
 
       {orders.length === 0 ? (
-        <p className="text-gray-600 text-lg">
-          You haven’t placed any orders yet.
-        </p>
+        <div className="flex flex-col items-center justify-center text-center py-20">
+          <ShoppingBag className="h-20 w-20 text-gray-400 mb-4" />
+          <p className="text-gray-600 text-lg mb-3">
+            You haven’t placed any orders yet.
+          </p>
+          <Link
+            to="/menu"
+            className="px-5 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition"
+          >
+            Start Shopping
+          </Link>
+        </div>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {orders.map((order, i) => (
-            <OrderCard key={i} order={order} />
+            <div
+              key={i}
+              className="bg-white rounded-xl shadow-md p-5 flex flex-col justify-between hover:shadow-lg transition"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between border-b pb-2">
+                  <span className="text-sm text-gray-500">Order ID</span>
+                  <span className="text-sm font-semibold">#{i + 1001}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Item:</span>
+                  <span className="font-medium">{order.item || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Quantity:</span>
+                  <span>{order.quantity || 1}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Total:</span>
+                  <span className="font-semibold text-emerald-600">
+                    ₹{order.totalPrice || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Status:</span>
+                  <span className="flex items-center gap-1 text-blue-600">
+                    <Truck className="h-4 w-4" /> On the Way
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4 text-xs text-gray-500 border-t pt-2">
+                Delivery to: {order.address || 'No address provided'}
+              </div>
+            </div>
           ))}
         </div>
       )}

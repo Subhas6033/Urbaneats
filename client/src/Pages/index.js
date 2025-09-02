@@ -8,7 +8,7 @@ import Menu from './Menu/Menu'
 import News from "./News";
 import Order from './Order'
 import Rewards from "./Rewards";
-
+import Payment from "./Payment";
 
 export {
     Home,
@@ -21,4 +21,5 @@ export {
     News,
     Order,
     Rewards,
+    Payment
 }
