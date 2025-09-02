@@ -6,7 +6,7 @@ import TypewriterEffect from './common/Typewriter';
 import Button from './common/Button';
 import MenuCard from './Menu/MenuCard';
 import OrderCard from './Order/OrderCard';
-import OffersCarousel from './offers/Offers';
+import OffersCarousel from './Offers/OffersCarousel';
 import Feedback from './Feedback/Feedback';
 
 export {
