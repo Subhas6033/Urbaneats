@@ -21,6 +21,7 @@ import {
 import { Provider } from 'react-redux';
 import { store } from './Store/Store.js';
 import ErrorFallback from './Components/Err/ErrorBoundary.jsx';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const router = createBrowserRouter([
   {
@@ -81,7 +82,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ErrorFallback
+    <ErrorBoundary
       FallbackComponent={ErrorFallback}
       onReset={() => {
         window.location.reload();
@@ -90,6 +91,6 @@ createRoot(document.getElementById('root')).render(
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
-    </ErrorFallback>
+    </ErrorBoundary>
   </StrictMode>
 );
