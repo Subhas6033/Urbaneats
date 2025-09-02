@@ -5,6 +5,7 @@ const orderSlice = createSlice({
   initialState: {
     cart: [],
     confirmedOrders: [],
+    cateringOrders: [], 
   },
   reducers: {
     addToCart: (state, action) => {
@@ -31,12 +32,20 @@ const orderSlice = createSlice({
     confirmOrder: (state, action) => {
       state.confirmedOrders.push({
         ...action.payload,
-        status: 'placed', // default user-facing status
+        status: 'placed', 
       });
       state.cart = state.cart.filter((i) => i.item !== action.payload.item);
+    },
+
+    confirmCateringOrder: (state, action) => {
+      state.cateringOrders.push({
+        ...action.payload,
+        status: 'pending', 
+      });
     },
   },
 });
 
-export const { addToCart, updateQuantity, confirmOrder } = orderSlice.actions;
+export const { addToCart, updateQuantity, confirmOrder, confirmCateringOrder } =
+  orderSlice.actions;
 export default orderSlice.reducer;

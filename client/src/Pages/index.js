@@ -1,6 +1,6 @@
 import Home from "./Home";
 import About from "./About";
-import Catering from "./Catering";
+import Catering from "./Catering/Catering";
 import Contact from "./Contact";
 import Gifts from "./Gifts";
 import Location from "./Location";
@@ -9,6 +9,7 @@ import News from "./News";
 import Order from './Order'
 import Rewards from "./Rewards";
 import Payment from "./Payment";
+import CateringBookPage from "./Catering/BookCatering";
 
 export {
     Home,
@@ -21,5 +22,6 @@ export {
     News,
     Order,
     Rewards,
-    Payment
+    Payment,
+    CateringBookPage
 }

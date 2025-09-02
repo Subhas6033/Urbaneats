@@ -14,7 +14,8 @@ import {
   News,
   Order,
   Rewards,
-  Payment
+  Payment,
+  CateringBookPage,
 } from './Pages/index';
 
 import { Provider } from 'react-redux';
@@ -64,10 +65,15 @@ const router = createBrowserRouter([
       {
         path: '/rewards',
         element: <Rewards />,
-      }, {
+      },
+      {
         path: '/payment',
-        element : <Payment />
-      }
+        element: <Payment />,
+      },
+      {
+        path: '/book-catering',
+        element: <CateringBookPage />,
+      },
     ],
   },
 ]);
