@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   Button,
   Testimonials,
@@ -87,144 +88,153 @@ const Home = () => {
   ];
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-white via-emerald-50 to-slate-50 overflow-x-hidden">
-      {/* Hero Section */}
-      <section className="relative w-full pt-6 pb-2 px-3">
-        <FadeInScale>
-          <Testimonials images={sliderImages} />
-        </FadeInScale>
-      </section>
+    <>
+      <Helmet>
+        <title>Urban Eats | Homepage</title>
+        <meta
+          name="description"
+          content="Explore Urban Eats - where flavor meets happiness. Order fresh food delivered fast!"
+        />
+      </Helmet>
+      <section className="min-h-screen bg-gradient-to-b from-white via-emerald-50 to-slate-50 overflow-x-hidden">
+        {/* Hero Section */}
+        <section className="relative w-full pt-6 pb-2 px-3">
+          <FadeInScale>
+            <Testimonials images={sliderImages} />
+          </FadeInScale>
+        </section>
 
-      {/* Intro */}
-      <section className="px-6 md:px-12 lg:px-24 py-24 text-center bg-gradient-to-b from-white to-gray-50">
-        <SlideUp>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-            Welcome to{' '}
-            <span className="block mt-4 text-emerald-500">
-              <TypewriterEffect
-                text={[
-                  'Urban Eats. Where Flavor Meets Happiness.',
-                  'Urban Eats. Good Food, Good Mood.',
-                  'Urban Eats. Fresh Flavors, Happy Moments.',
-                  'Urban Eats. Taste The Joy In Every Bite.',
-                ]}
-                className="font-semibold font-montserrat text-3xl md:text-4xl text-amber-400"
-              />
-            </span>
-          </h1>
-        </SlideUp>
+        {/* Intro */}
+        <section className="px-6 md:px-12 lg:px-24 py-24 text-center bg-gradient-to-b from-white to-gray-50">
+          <SlideUp>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+              Welcome to{' '}
+              <span className="block mt-4 text-emerald-500">
+                <TypewriterEffect
+                  text={[
+                    'Urban Eats. Where Flavor Meets Happiness.',
+                    'Urban Eats. Good Food, Good Mood.',
+                    'Urban Eats. Fresh Flavors, Happy Moments.',
+                    'Urban Eats. Taste The Joy In Every Bite.',
+                  ]}
+                  className="font-semibold font-montserrat text-3xl md:text-4xl text-amber-400"
+                />
+              </span>
+            </h1>
+          </SlideUp>
 
-        <FadeInUp>
-          <p className="mt-8 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            Discover delicious meals crafted with love and served with passion.
-            Experience a modern twist on traditional flavors, made for food
-            lovers like you.
-          </p>
-        </FadeInUp>
+          <FadeInUp>
+            <p className="mt-8 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              Discover delicious meals crafted with love and served with
+              passion. Experience a modern twist on traditional flavors, made
+              for food lovers like you.
+            </p>
+          </FadeInUp>
 
-        <ScaleIn>
-          <div className="mt-10 flex flex-col md:flex-row justify-center gap-4">
+          <ScaleIn>
+            <div className="mt-10 flex flex-col md:flex-row justify-center gap-4">
+              <Button
+                onClick={() => navigate('/orders')}
+                variant="primary"
+                size="lg"
+              >
+                Order Now
+              </Button>
+              <Button
+                onClick={() => navigate('/menu')}
+                variant="outline"
+                size="lg"
+              >
+                Explore Menu
+              </Button>
+            </div>
+          </ScaleIn>
+        </section>
+
+        {/* Features */}
+        <section className="px-6 md:px-12 lg:px-24 py-20">
+          <FadeInDown>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-3">
+                <span className="p-3 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 text-white shadow-lg">
+                  <Zap />
+                </span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+                  Our Features
+                </span>
+              </h2>
+              <div className="mt-3 w-28 h-1 bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 mx-auto rounded-full shadow-md"></div>
+            </div>
+          </FadeInDown>
+
+          <div className="grid gap-12 md:grid-cols-3 text-center">
+            {features.map((feature, i) => (
+              <SlideUp key={i}>
+                <div className="p-8 rounded-2xl bg-white border border-emerald-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform">
+                  <h3 className="text-xl font-semibold text-emerald-600 mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-700">{feature.desc}</p>
+                </div>
+              </SlideUp>
+            ))}
+          </div>
+        </section>
+
+        {/* Popular Dishes */}
+        <section className="px-6 md:px-12 lg:px-24 py-20 text-center">
+          <FadeInDown>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-3">
+                <span className="p-3 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 text-white shadow-lg">
+                  <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8" />
+                </span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+                  Our Popular Dishes
+                </span>
+              </h2>
+              <div className="mt-3 w-28 h-1 bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 mx-auto rounded-full shadow-md"></div>
+            </div>
+          </FadeInDown>
+
+          <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
+            {popularDishes.map((dish, i) => (
+              <FadeInUp key={i}>
+                <MenuCard
+                  image={dish.image}
+                  name={dish.name}
+                  price={dish.price}
+                  description={dish.description}
+                />
+              </FadeInUp>
+            ))}
+          </div>
+
+          <ScaleUp>
             <Button
-              onClick={() => navigate('/orders')}
-              variant="primary"
-              size="lg"
-            >
-              Order Now
-            </Button>
-            <Button
+              className="mt-12 px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg transition-transform hover:scale-105"
               onClick={() => navigate('/menu')}
-              variant="outline"
-              size="lg"
             >
-              Explore Menu
+              View Full Menu
             </Button>
-          </div>
-        </ScaleIn>
+          </ScaleUp>
+        </section>
+
+        {/* Offers Section */}
+        <section className="px-4 md:px-12 lg:px-24 py-20">
+          <SlideLeft>
+            <OffersCarousel />
+          </SlideLeft>
+        </section>
+
+        {/* Users Feedback Sections */}
+        <section className="px-4 md:px-12 lg:px-24 py-20">
+          <SlideRight>
+            <Feedback />
+          </SlideRight>
+        </section>
       </section>
-
-      {/* Features */}
-      <section className="px-6 md:px-12 lg:px-24 py-20">
-        <FadeInDown>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-3">
-              <span className="p-3 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 text-white shadow-lg">
-                <Zap />
-              </span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-                Our Features
-              </span>
-            </h2>
-            <div className="mt-3 w-28 h-1 bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 mx-auto rounded-full shadow-md"></div>
-          </div>
-        </FadeInDown>
-
-        <div className="grid gap-12 md:grid-cols-3 text-center">
-          {features.map((feature, i) => (
-            <SlideUp key={i}>
-              <div className="p-8 rounded-2xl bg-white border border-emerald-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform">
-                <h3 className="text-xl font-semibold text-emerald-600 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-700">{feature.desc}</p>
-              </div>
-            </SlideUp>
-          ))}
-        </div>
-      </section>
-
-      {/* Popular Dishes */}
-      <section className="px-6 md:px-12 lg:px-24 py-20 text-center">
-        <FadeInDown>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold flex items-center justify-center gap-3">
-              <span className="p-3 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 text-white shadow-lg">
-                <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8" />
-              </span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-                Our Popular Dishes
-              </span>
-            </h2>
-            <div className="mt-3 w-28 h-1 bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 mx-auto rounded-full shadow-md"></div>
-          </div>
-        </FadeInDown>
-
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
-          {popularDishes.map((dish, i) => (
-            <FadeInUp key={i}>
-              <MenuCard
-                image={dish.image}
-                name={dish.name}
-                price={dish.price}
-                description={dish.description}
-              />
-            </FadeInUp>
-          ))}
-        </div>
-
-        <ScaleUp>
-          <Button
-            className="mt-12 px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg transition-transform hover:scale-105"
-            onClick={() => navigate('/menu')}
-          >
-            View Full Menu
-          </Button>
-        </ScaleUp>
-      </section>
-
-      {/* Offers Section */}
-      <section className="px-4 md:px-12 lg:px-24 py-20">
-        <SlideLeft>
-          <OffersCarousel />
-        </SlideLeft>
-      </section>
-
-      {/* Users Feedback Sections */}
-      <section className="px-4 md:px-12 lg:px-24 py-20">
-        <SlideRight>
-          <Feedback />
-        </SlideRight>
-      </section>
-    </section>
+    </>
   );
 };
 

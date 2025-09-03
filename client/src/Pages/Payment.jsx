@@ -5,6 +5,7 @@ import { confirmOrder } from '../Slice/OrderSlice';
 import { QRCodeSVG } from 'qrcode.react';
 import { IndianRupee } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import {Helmet} from 'react-helmet-async'
 
 const Payment = () => {
   const upiId = import.meta.env.VITE_UPI_ID;
@@ -45,6 +46,13 @@ const Payment = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Urban Eats | Payments </title>
+        <meta
+          name="description"
+          content="Securely complete your payment with Urban Eats. We support multiple payment options to ensure a smooth, fast, and hassle-free checkout experience."
+        />
+      </Helmet>
       <form
         onSubmit={handleConfirmOrder}
         className="min-h-screen bg-gray-100 p-6 flex justify-center"

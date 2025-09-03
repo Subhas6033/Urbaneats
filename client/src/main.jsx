@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import {
   Home,
   About,
@@ -89,7 +90,9 @@ createRoot(document.getElementById('root')).render(
       }}
     >
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <HelmetProvider>
+          <RouterProvider router={router} />
+        </HelmetProvider>
       </Provider>
     </ErrorBoundary>
   </StrictMode>
