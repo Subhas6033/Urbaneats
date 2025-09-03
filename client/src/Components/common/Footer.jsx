@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
 
 const Footer = () => {
@@ -77,9 +77,23 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-slate-700 mt-10 pt-6 text-center text-sm">
-        &copy; {new Date().getFullYear()} Urban Eats. All rights reserved.
+      {/* Footer Bottom Row */}
+      <div className="border-t border-slate-200 mt-10 pt-6 px-6 text-sm text-slate-200 text-center">
+        <p>
+          &copy; {new Date().getFullYear()} Urban Eats. All rights reserved.
+        </p>
+        <p className="mt-1">
+          Designed and maintained by{' '}
+          <a
+            href="https://github.com/subhas404"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:underline hover:text-slate-400 transition-colors duration-200"
+            aria-label="Visit Subhas' GitHub profile"
+          >
+            &lt; Subhas /&gt;
+          </a>
+        </p>
       </div>
     </footer>
   );
