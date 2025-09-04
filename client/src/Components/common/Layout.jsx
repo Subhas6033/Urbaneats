@@ -6,7 +6,7 @@ const Layout = ({
 }) => {
   return (
     <div
-      className={`w-full h-auto text-emerald-700 bg-background ${className}`}
+      className={`w-full h-screen text-emerald-700 overflow-x-hidden ${className}`}
     >
       {children}
     </div>

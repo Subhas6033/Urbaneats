@@ -1,42 +1,13 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, User, X } from 'lucide-react';
+import { navItems } from '../../Data/index';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navItems = [
-    {
-      name: 'Home',
-      navUrl: '/',
-    },
-    {
-      name: 'Menu',
-      navUrl: '/menu',
-    },
-    {
-      name: 'Catering',
-      navUrl: '/catering',
-    },
-    {
-      name: 'Location',
-      navUrl: '/location',
-    },
-    {
-      name: 'Rewards',
-      navUrl: '/rewards',
-    },
-    {
-      name: 'Gifts',
-      navUrl: '/gifts',
-    },
-    {
-      name: 'News',
-      navUrl: '/news',
-    },
-  ];
 
   return (
-    <nav className="w-full text-lg bg-slate-50 shadow-md sticky top-0 z-50">
+    <nav className="w-full text-lg bg-slate-50 shadow-md sticky top-0 z-50 overfxh">
       {/* Main Container */}
       <div className="px-6 py-3 flex justify-between items-center">
         {/* Logo / Brand */}
@@ -49,7 +20,7 @@ const Navbar = () => {
         </header>
 
         {/* Desktop Nav Links */}
-        <ul className="hidden md:flex items-center gap-8">
+        <ul className="hidden lg:flex items-center gap-8">
           {navItems.map((nav, index) => (
             <li key={index}>
               <NavLink
@@ -69,7 +40,7 @@ const Navbar = () => {
         </ul>
 
         {/* Order Button and User Sections */}
-        <div className="hidden md:flex items-center gap-5 px-6">
+        <div className="hidden lg:flex items-center gap-5 px-6">
           {/* User Icon */}
           <div>
             <Link
@@ -83,7 +54,7 @@ const Navbar = () => {
           <div>
             <Link
               to="/orders"
-              className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
+              className="px-1 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
             >
               Your Orders
             </Link>
@@ -93,7 +64,7 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-black focus:outline-none"
+          className="lg:hidden text-black focus:outline-none"
         >
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
@@ -101,7 +72,7 @@ const Navbar = () => {
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <div className="md:hidden fixed top-14 left-0 w-full z-50 bg-black px-6 py-4 border-t border-gray-800">
+        <div className="lg:hidden fixed top-14 left-0 w-full z-50 bg-black px-6 py-4 border-t border-gray-800">
           {/* Nav Items */}
           <ul className="flex flex-col gap-4">
             {navItems.map((nav, index) => (
