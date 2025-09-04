@@ -5,7 +5,7 @@ import { confirmOrder } from '../Slice/OrderSlice';
 import { QRCodeSVG } from 'qrcode.react';
 import { IndianRupee } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
-import {Helmet} from 'react-helmet-async'
+import { Helmet } from 'react-helmet-async';
 
 const Payment = () => {
   const upiId = import.meta.env.VITE_UPI_ID;
@@ -90,8 +90,13 @@ const Payment = () => {
                   />
                   <span className="font-medium">{option.label}</span>
                 </label>
+                {/* Awarness Message to not to pay */}
               </div>
             ))}
+            <p className='text-xl font-bold text-black'>
+              This is just a Prototype of the Payment Section. SO do not pay
+              anything.
+            </p>
           </div>
 
           {/* Middle: Payment Details */}
