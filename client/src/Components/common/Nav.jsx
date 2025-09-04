@@ -73,7 +73,7 @@ const Navbar = () => {
           {/* User Icon */}
           <div>
             <Link
-              to="/user"
+              to="/user/signup"
               className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition-colors shadow-md"
             >
               <User size={20} />

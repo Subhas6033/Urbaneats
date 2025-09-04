@@ -8,6 +8,9 @@ import MenuCard from './Menu/MenuCard';
 import OrderCard from './Order/OrderCard';
 import OffersCarousel from './Offers/OffersCarousel';
 import Feedback from './Feedback/Feedback';
+import SignUp from './signup/SignUp';
+import LoginComp from './login/Login';
+import Input from './common/Input';
 
 export {
   Layout,
@@ -19,5 +22,8 @@ export {
   MenuCard,
   OrderCard,
   OffersCarousel,
-  Feedback
+  Feedback,
+  SignUp,
+  LoginComp,
+  Input,
 };
