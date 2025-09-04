@@ -14,7 +14,7 @@ const Payment = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { item, price, quantity, totalPrice } = location.state || {};
-  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [upiApp, setUpiApp] = useState('super.money');
 
   const handleConfirmOrder = (e) => {

@@ -13,7 +13,7 @@ const Navbar = () => {
         {/* Logo / Brand */}
         <header>
           <Link to="/" className="group">
-            <span className="text-2xl font-playfair font-extrabold tracking-widest transition-colors group-hover:text-emerald-400">
+            <span className="text-2xl font-playfair text-wrap font-extrabold tracking-widest transition-colors group-hover:text-emerald-400">
               URBAN <span className="text-emerald-400">EATS</span>
             </span>
           </Link>
@@ -54,7 +54,7 @@ const Navbar = () => {
           <div>
             <Link
               to="/orders"
-              className="px-1 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
+              className="py-2 px-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
             >
               Your Orders
             </Link>
