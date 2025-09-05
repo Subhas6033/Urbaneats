@@ -38,7 +38,7 @@ const PageLoader = () => {
         />
       </motion.svg>
       <TypewriterEffect
-        text={'Welcome to our Resturent'}
+        text={'Welcome to Urban Eats'}
         className="text-white mt-2 text-2xl"
       />
     </div>
