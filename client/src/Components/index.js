@@ -11,6 +11,7 @@ import Feedback from './Feedback/Feedback';
 import SignUp from './signup/SignUp';
 import LoginComp from './login/Login';
 import Input from './common/Input';
+import PageLoader from './Loader/Loader';
 
 export {
   Layout,
@@ -26,4 +27,5 @@ export {
   SignUp,
   LoginComp,
   Input,
+  PageLoader,
 };

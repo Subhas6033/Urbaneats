@@ -1,22 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 import { TypewriterEffect } from '../index';
 
 const PageLoader = () => {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 4000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!loading) return null;
-
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-black">
+    <div className="flex flex-col items-center justify-center w-full h-[100vh] bg-black">
       <motion.svg
         xmlns="http://www.w3.org/2000/svg"
         width="250"
