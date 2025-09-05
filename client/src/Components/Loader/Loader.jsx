@@ -16,7 +16,7 @@ const PageLoader = () => {
   if (!loading) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen bg-black">
+    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-black">
       <motion.svg
         xmlns="http://www.w3.org/2000/svg"
         width="250"
