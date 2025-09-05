@@ -1,16 +1,14 @@
-import React from 'react'
+import React from 'react';
+import { FadeInScale } from '../../Utility/Animation';
 
-const Layout = ({
-    className = "",
-    children
-}) => {
+const Layout = ({ className = '', children }) => {
   return (
-    <div
+    <FadeInScale
       className={`w-full h-screen text-emerald-700 overflow-x-hidden ${className}`}
     >
       {children}
-    </div>
+    </FadeInScale>
   );
-}
+};
 
-export default Layout
+export default Layout;
