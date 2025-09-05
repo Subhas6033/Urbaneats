@@ -107,7 +107,7 @@ const Navbar = () => {
           {/* User Icon */}
           <div className="mt-6 flex justify-center">
             <Link
-              to="/user"
+              to="/user/signup"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition-colors shadow-md"
             >
