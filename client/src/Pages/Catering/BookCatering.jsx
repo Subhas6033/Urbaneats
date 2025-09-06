@@ -62,7 +62,7 @@ const CateringBookPage = () => {
           content="Easily book catering with Urban Eats for your next event. Choose your menu, set your date, and enjoy fresh, delicious meals delivered with professional service."
         />
       </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gray-50 min-h-screen">
+      <div className="mt-10 px-6 md:px-12 lg:px-24 py-16 bg-gray-50 min-h-screen">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
             Book Catering

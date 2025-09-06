@@ -18,14 +18,13 @@ import {
   Payment,
   CateringBookPage,
   Signup,
-  Login
+  Login,
 } from './Pages/index';
 
 import { Provider } from 'react-redux';
 import { store } from './Store/Store.js';
 import ErrorFallback from './Components/Err/ErrorBoundary.jsx';
 import { ErrorBoundary } from 'react-error-boundary';
-
 
 const router = createBrowserRouter([
   {
@@ -83,10 +82,11 @@ const router = createBrowserRouter([
       {
         path: '/user/signup',
         element: <Signup />,
-      }, {
-        path: "/user/login",
-        element : <Login />
-      }
+      },
+      {
+        path: '/user/login',
+        element: <Login />,
+      },
     ],
   },
 ]);

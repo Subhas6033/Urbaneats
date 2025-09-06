@@ -12,6 +12,7 @@ import SignUp from './signup/SignUp';
 import LoginComp from './login/Login';
 import Input from './common/Input';
 import PageLoader from './Loader/Loader';
+import ScrollToTop from './common/ScrollToTop';
 
 export {
   Layout,
@@ -28,4 +29,5 @@ export {
   LoginComp,
   Input,
   PageLoader,
+  ScrollToTop,
 };

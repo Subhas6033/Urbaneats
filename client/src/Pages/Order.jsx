@@ -27,7 +27,7 @@ const Order = () => {
           content="Place your order with Urban Eats and enjoy fresh, flavorful meals delivered fast to your doorstep. Browse the menu and order in just a few clicks."
         />
       </Helmet>
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-50 p-6 mt-14">
         <h1 className="text-3xl font-bold text-emerald-600 mb-6">My Orders</h1>
 
         {!hasOrders ? (

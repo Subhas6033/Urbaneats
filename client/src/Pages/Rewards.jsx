@@ -43,7 +43,7 @@ const RewardsPage = () => {
           content="Join Urban Eats Rewards and earn points with every order. Redeem rewards for free meals, exclusive offers, and more delicious benefits."
         />
       </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen mt-10">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Header */}
           <FadeInDown>

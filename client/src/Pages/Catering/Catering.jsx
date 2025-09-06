@@ -63,7 +63,7 @@ const CateringPage = () => {
           content="Urban Eats offers premium catering services for events of all sizes. From office lunches to weddings, enjoy fresh, delicious meals delivered with care."
         />
       </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gray-50">
+      <div className="px-6 md:px-12 lg:px-24 mt-10 py-16 bg-gray-50">
         {/* Hero Section */}
         <motion.section
           initial={{ opacity: 0, y: 40 }}

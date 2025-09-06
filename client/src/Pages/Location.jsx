@@ -14,7 +14,7 @@ const LocationPage = () => {
           content="Find Urban Eats locations near you. Get directions, store hours, and contact information to enjoy our meals wherever you are."
         />
       </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-emerald-50 via-white to-indigo-50 min-h-screen">
+      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-emerald-50 via-white to-indigo-50 min-h-screen mt-10">
         <FadeInUp className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
           {/* Header */}
           <FadeInDown className="p-8 border-b bg-gradient-to-r from-emerald-600 to-indigo-600">

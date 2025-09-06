@@ -58,7 +58,7 @@ const MenuPage = () => {
           content="Discover the full menu of Urban Eats - freshly cooked meals, desserts, and beverages."
         />
       </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-12">
+      <div className="px-6 md:px-12 lg:px-24 py-12 mt-10">
         <FadeInDown>
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900">

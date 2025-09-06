@@ -1,8 +1,12 @@
-import React from 'react';
-import { Layout, Nav, Footer } from './Components/index';
+import React, { useEffect, useState } from 'react';
+import {
+  Layout,
+  Nav,
+  Footer,
+  PageLoader,
+  ScrollToTop,
+} from './Components/index';
 import { Outlet } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { PageLoader } from './Components/index';
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -13,6 +17,7 @@ const App = () => {
     }, 4000);
     return () => clearTimeout(timer);
   }, []);
+
   return (
     <>
       {loading ? (
@@ -20,7 +25,8 @@ const App = () => {
       ) : (
         <Layout>
           <Nav />
-          <main className="overflow-x-hidden">
+          <main className="overflow-x-hidden overflow-y-auto">
+            <ScrollToTop />
             <Outlet />
           </main>
           <Footer />
