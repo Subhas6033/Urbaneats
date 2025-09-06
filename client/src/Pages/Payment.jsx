@@ -55,7 +55,7 @@ const Payment = () => {
       </Helmet>
       <form
         onSubmit={handleConfirmOrder}
-        className="min-h-screen bg-gray-100 p-6 flex justify-center mt-14"
+        className="min-h-screen bg-gray-100 p-6 flex justify-center"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-7xl">
           {/* Left: Payment Methods */}

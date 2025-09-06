@@ -58,7 +58,7 @@ const NewsPage = () => {
           content="Stay updated with the latest news from Urban Eats. Discover new menu launches, special promotions, and exciting updates about our journey."
         />
       </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-gray-50 to-white min-h-screen mt-10">
+      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-gray-50 to-white min-h-screen">
         <div className="max-w-6xl mx-auto space-y-12">
           {/* Header */}
           <motion.div

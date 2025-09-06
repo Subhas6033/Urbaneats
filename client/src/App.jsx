@@ -25,7 +25,7 @@ const App = () => {
       ) : (
         <Layout>
           <Nav />
-          <main className="overflow-x-hidden overflow-y-auto">
+          <main className="overflow-x-hidden overflow-y-auto pt-12">
             <ScrollToTop />
             <Outlet />
           </main>

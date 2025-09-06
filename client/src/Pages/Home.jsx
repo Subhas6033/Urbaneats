@@ -96,7 +96,7 @@ const Home = () => {
           content="Explore Urban Eats - where flavor meets happiness. Order fresh food delivered fast!"
         />
       </Helmet>
-      <section className="min-h-screen bg-gradient-to-b from-white via-emerald-50 to-slate-50 overflow-x-hidden mt-16">
+      <section className="min-h-screen bg-gradient-to-b from-white via-emerald-50 to-slate-50 overflow-x-hidden pt-4">
         {/* Hero Section */}
         <section className="relative w-full pt-6 pb-2 px-3">
           <FadeInScale>

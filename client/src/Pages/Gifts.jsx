@@ -99,7 +99,7 @@ const GiftPage = () => {
           content="Stay updated with the latest news from Urban Eats. Discover new menu launches, special promotions, and exciting updates about our journey."
         />
       </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-pink-50 to-red-50 min-h-screen mt-10">
+      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-pink-50 to-red-50 min-h-screen">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Header */}
           <FadeInScale>
