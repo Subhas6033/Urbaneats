@@ -4,31 +4,11 @@ import { Gift, Send, Heart, CreditCard, Smartphone } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { confirmOrder } from '../Slice/OrderSlice';
 import { FadeInScale, FadeInUp } from '../Utility/Animation';
-import {Helmet} from 'react-helmet-async'
+import { Helmet } from 'react-helmet-async';
+import { giftOptions } from '../Data/index';
 
 const GiftPage = () => {
   const dispatch = useDispatch();
-
-  const giftOptions = [
-    {
-      id: 1,
-      name: '₹500 Gift Card',
-      price: 500,
-      description: 'Perfect for any occasion.',
-    },
-    {
-      id: 2,
-      name: '₹1000 Gift Card',
-      price: 1000,
-      description: 'Give the gift of choice.',
-    },
-    {
-      id: 3,
-      name: 'Special Dessert Hamper',
-      price: 1200,
-      description: 'Curated treats for your loved ones.',
-    },
-  ];
 
   const [selectedGift, setSelectedGift] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');

@@ -1,27 +1,9 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
+import {quickLinks} from '../../Data/index'
 
 const Footer = () => {
-  const quickLinks = [
-    {
-      name: 'Menu',
-      url: '/menu',
-    },
-    {
-      name: 'About',
-      url: '/about',
-    },
-    {
-      name: 'Contact',
-      url: '/contact',
-    },
-    {
-      name: 'Order Now',
-      url: '/orders',
-    },
-  ];
-
   const navigate = useNavigate();
 
   return (

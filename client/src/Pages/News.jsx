@@ -3,43 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Newspaper, Calendar, Tag, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FadeInUp, FadeInScale } from '../Utility/Animation';
-import {Helmet} from 'react-helmet-async'
-
-const sampleNews = [
-  {
-    id: 1,
-    title: 'New Catering Packages Launched!',
-    summary:
-      'We’ve introduced customizable catering options for all your special events.',
-    fullText:
-      'We’ve introduced new customizable catering options for weddings, corporate events, and private parties. Customers can now choose from multiple cuisines, live counters, and flexible packages tailored to their budget and preferences. Contact us today to book your event and make it unforgettable!',
-    date: '2025-08-28',
-    category: 'Catering',
-    image: 'https://source.unsplash.com/600x400/?food,catering',
-  },
-  {
-    id: 2,
-    title: 'Festive Season Discounts 🎉',
-    summary:
-      'Enjoy flat 20% off on all gift cards and hampers this festive season.',
-    fullText:
-      'Celebrate the festive season with exclusive discounts! Enjoy flat 20% off on all gift cards and festive hampers. Gift your loved ones something special while saving big. Offer valid until the end of the month across all outlets and online orders.',
-    date: '2025-08-15',
-    category: 'Offers',
-    image: 'https://source.unsplash.com/600x400/?gift,celebration',
-  },
-  {
-    id: 3,
-    title: 'New Store Opening in Kolkata',
-    summary:
-      'We’re expanding! Visit our new outlet with exclusive launch offers.',
-    fullText:
-      'We are excited to announce the grand opening of our new store in Kolkata! Customers can enjoy exclusive launch offers, free tastings, and surprise gift vouchers. The store will officially open on July 25th, and we invite you to join us for the celebration!',
-    date: '2025-07-20',
-    category: 'Announcements',
-    image: 'https://source.unsplash.com/600x400/?store,shop',
-  },
-];
+import { Helmet } from 'react-helmet-async';
+import { sampleNews } from '../Data/index';
 
 const NewsPage = () => {
   const [news, setNews] = useState([]);

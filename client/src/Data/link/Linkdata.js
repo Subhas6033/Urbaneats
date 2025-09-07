@@ -29,4 +29,23 @@ const navItems = [
   },
 ];
 
-export {navItems}
+const quickLinks = [
+  {
+    name: 'Menu',
+    url: '/menu',
+  },
+  {
+    name: 'About',
+    url: '/about',
+  },
+  {
+    name: 'Contact',
+    url: '/contact',
+  },
+  {
+    name: 'Order Now',
+    url: '/orders',
+  },
+];
+
+export {navItems, quickLinks}

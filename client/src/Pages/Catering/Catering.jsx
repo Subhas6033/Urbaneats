@@ -1,56 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Utensils, Clipboard, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-
-const cateringServices = [
-  {
-    icon: Users,
-    title: 'Corporate Events',
-    description:
-      'Business lunches, meetings, and office parties with hassle-free catering.',
-  },
-  {
-    icon: Utensils,
-    title: 'Weddings & Parties',
-    description:
-      'Full-course meals, appetizers, and desserts for your special events.',
-  },
-  {
-    icon: Clipboard,
-    title: 'Private Catering',
-    description:
-      'Birthday parties, family gatherings, and other private events.',
-  },
-  {
-    icon: CheckCircle,
-    title: 'Custom Menus',
-    description:
-      'Tailor your menu based on event size, preferences, and cuisine type.',
-  },
-];
-
-const sampleMenu = [
-  {
-    name: 'Crispy Spring Rolls',
-    image: './popular dish/Crispy Spring Rolls.jpg',
-  },
-  { name: 'BBQ Chicken Pizza', image: './popular dish/BBQ Chicken Pizza.avif' },
-  {
-    name: 'Paneer Butter Masala',
-    image: './popular dish/Paneer Butter Masala.webp',
-  },
-  { name: 'Gulab Jamun', image: './popular dish/Gulab Jamun.webp' },
-];
-
-const steps = [
-  'Choose Your Menu',
-  'Select Your Package',
-  'Confirm & Schedule',
-  'Enjoy!',
-];
+import { cateringServices, sampleMenu, steps } from '../../Data/index';
 
 const CateringPage = () => {
   const navigate = useNavigate();

@@ -4,40 +4,7 @@ import { Autoplay, EffectCoverflow } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import { Star, MessageCircle } from 'lucide-react';
-
-const testimonials = [
-  {
-    id: 1,
-    name: 'Amit Sharma',
-    feedback:
-      'The food was delicious and delivery was super fast! Definitely ordering again.',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: 'Priya Sen',
-    feedback:
-      'Loved the packaging and the taste was just like a restaurant dine-in experience.',
-    image: 'https://randomuser.me/api/portraits/women/44.jpg',
-    rating: 4,
-  },
-  {
-    id: 3,
-    name: 'Rahul Mehta',
-    feedback:
-      'Great discounts and amazing offers. Value for money and super tasty.',
-    image: 'https://randomuser.me/api/portraits/men/65.jpg',
-    rating: 5,
-  },
-  {
-    id: 4,
-    name: 'Sneha Roy',
-    feedback: 'Best burgers in town! The BOGO Friday offer is unbeatable.',
-    image: 'https://randomuser.me/api/portraits/women/68.jpg',
-    rating: 5,
-  },
-];
+import { testimonials } from '../../Data/index';
 
 const Testimonials3D = () => {
   return (

@@ -1,5 +1,22 @@
-import { navItems } from "./link/Linkdata";
+import { navItems, quickLinks } from './link/Linkdata';
+import {
+  testimonials,
+  cateringServices,
+  sampleMenu,
+  steps,
+  giftOptions,
+  popularDishes,
+  sampleNews,
+} from './site/Review';
 
 export {
-    navItems
-}
+  navItems,
+  quickLinks,
+  testimonials,
+  cateringServices,
+  sampleMenu,
+  steps,
+  giftOptions,
+  popularDishes,
+  sampleNews,
+};

@@ -22,6 +22,7 @@ import {
   ScaleUp,
   FadeInScale,
 } from '../Utility/Animation';
+import { popularDishes } from '../Data/index';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -31,45 +32,6 @@ const Home = () => {
     './Heroimg/food5.webp',
     './Heroimg/food7.jpg',
     './Heroimg/food8.jpg',
-  ];
-
-  const popularDishes = [
-    {
-      image: './popular dish/Crispy Spring Rolls.jpg',
-      name: 'Crispy Spring Rolls',
-      price: 180,
-      description: 'Golden fried rolls stuffed with fresh veggies.',
-    },
-    {
-      image: './popular dish/BBQ Chicken Pizza.avif',
-      name: 'BBQ Chicken Pizza',
-      price: 350,
-      description: 'Smoky BBQ chicken with melted cheese on a crispy base.',
-    },
-    {
-      image: './popular dish/Paneer Butter Masala.webp',
-      name: 'Paneer Butter Masala',
-      price: 260,
-      description: 'Soft paneer cubes in rich buttery tomato gravy.',
-    },
-    {
-      image: './popular dish/Tandoori Momos.jpg',
-      name: 'Tandoori Momos',
-      price: 200,
-      description: 'Spiced momos roasted to perfection in tandoor.',
-    },
-    {
-      image: './popular dish/Gulab Jamun.webp',
-      name: 'Gulab Jamun',
-      price: 90,
-      description: 'Soft milk dumplings soaked in sweet syrup.',
-    },
-    {
-      image: './popular dish/Mango Lassi.png',
-      name: 'Mango Lassi',
-      price: 120,
-      description: 'Refreshing mango yogurt drink, smooth and creamy.',
-    },
   ];
 
   const features = [
