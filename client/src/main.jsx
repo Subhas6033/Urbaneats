@@ -8,7 +8,7 @@ import {
   Home,
   About,
   Catering,
-  Contact,
+  ContactPage,
   Gifts,
   Location,
   Menu,
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/contact',
-        element: <Contact />,
+        element: <ContactPage />,
       },
       {
         path: '/gifts',
