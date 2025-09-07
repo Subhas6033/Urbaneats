@@ -9,7 +9,7 @@ dotenv.config({
 connectDB()
   .then(() => {
     app.get('/', (req, res) => {
-      res.send('Welcome to Server');
+      res.send(`<h1>Welcome to Server<h1/>`);
     });
 
     app.listen(process.env.PORT || 8000, () => {

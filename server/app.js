@@ -26,4 +26,8 @@ app.use(
 
 app.use(cookieParser());
 
+// Routing
+import userRoute from './src/Routes/User.routes.js';
+app.use('/api/v1/user', userRoute);
+
 export { app };
