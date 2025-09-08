@@ -15,19 +15,18 @@ export default function SignupPage() {
   const navigate = useNavigate();
 
   // Auto close modal after 3 seconds if success
-useEffect(() => {
-  if (signupStatus !== null) {
-    const timer = setTimeout(() => {
-      if (signupStatus === 'success') {
-        navigate('/');
-      }
-      setSignupStatus(null); // reset for all statuses
-    }, 3000);
+  useEffect(() => {
+    if (signupStatus !== null) {
+      const timer = setTimeout(() => {
+        if (signupStatus === 'success') {
+          navigate('/');
+        }
+        setSignupStatus(null); // reset for all statuses
+      }, 3000);
 
-    return () => clearTimeout(timer);
-  }
-}, [signupStatus, navigate]);
-
+      return () => clearTimeout(timer);
+    }
+  }, [signupStatus, navigate]);
 
   // Countdown for resend OTP
   useEffect(() => {
@@ -53,9 +52,10 @@ useEffect(() => {
 
   // 1️⃣ Send OTP
   const handleSendOtp = async () => {
+    console.log(import.meta.env.VITE_BACKEND_URL);
     try {
       await axios.post(
-        `${import.meta.env.BACKEND_URI}/api/v1/user/send-otp`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/send-otp`,
         { userName: nameValue, email: emailValue },
         { withCredentials: true }
       );
@@ -72,7 +72,7 @@ useEffect(() => {
   const handleVerifyOtp = async () => {
     try {
       await axios.post(
-        `${import.meta.env.BACKEND_URI}/api/v1/user/verify-otp`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/verify-otp`,
         { otp },
         { withCredentials: true }
       );
@@ -87,7 +87,7 @@ useEffect(() => {
   const handleResendOtp = async () => {
     try {
       await axios.post(
-        `${import.meta.env.BACKEND_URI}/api/v1/user/send-otp`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/send-otp`,
         { userName: nameValue, email: emailValue },
         { withCredentials: true }
       );
@@ -104,7 +104,7 @@ useEffect(() => {
   const onSubmit = async (data) => {
     try {
       const res = await axios.post(
-        `${import.meta.env.BACKEND_URI}/api/v1/user/signup`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/signup`,
         {
           userName: data.name,
           email: data.email,
