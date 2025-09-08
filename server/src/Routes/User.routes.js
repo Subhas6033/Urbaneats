@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import { registerUser, loginUser } from '../Controllers/User.controller.js';
-// import { verifyJWT } from '../Middleware/Auth.middleware.js';
-
-console.log(registerUser, loginUser);
+import { sendOTPToUser } from '../Utils/OTP/sendOTP.js';
+import { verifyOTP } from '../Utils/OTP/verifyOTP.js';
 
 const router = Router();
 router.route('/signup').post(registerUser);
 router.route('/login').post(loginUser);
+
+router.route('/send-otp').post(sendOTPToUser);
+router.route('/verify-otp').post(verifyOTP);
 
 export default router;

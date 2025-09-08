@@ -17,6 +17,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
+// Register the Users
 const registerUser = asyncHandeler(async (req, res) => {
   const { userName, email, mobileNumber, password } = req.body;
   console.log(`
@@ -47,6 +48,14 @@ const registerUser = asyncHandeler(async (req, res) => {
 
   if (existedUserWithMobile) {
     throw new APIERROR(400, 'User with this mobile number already exists');
+  }
+
+  // Validate the OTP before creating the user
+  if (!req.cookies?.isEmailVerified) {
+    throw new APIERROR(
+      401,
+      'Please verify your email with OTP before registering'
+    );
   }
 
   //   Create User
@@ -83,7 +92,7 @@ const loginUser = asyncHandeler(async (req, res) => {
   }
 
   //   Find the user from DB
-  const userDetails = User.findOne({
+  const userDetails = await User.findOne({
     $or: [{ userName }, { email }],
   });
 
