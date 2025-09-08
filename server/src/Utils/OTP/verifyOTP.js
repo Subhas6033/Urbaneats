@@ -17,8 +17,8 @@ const verifyOTP = asyncHandeler(async (req, res) => {
   // If OTP is correct, set a "verified" flag cookie
   res.cookie('isEmailVerified', true, {
     httpOnly: true,
-    // secure: true,
-    sameSite: 'strict',
+    secure: true,
+    sameSite: 'none',
     maxAge: 5 * 60 * 1000,
   });
 
