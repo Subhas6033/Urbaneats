@@ -52,7 +52,6 @@ export default function SignupPage() {
 
   // 1️⃣ Send OTP
   const handleSendOtp = async () => {
-    console.log(import.meta.env.VITE_BACKEND_URL);
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/send-otp`,
@@ -113,8 +112,6 @@ export default function SignupPage() {
         },
         { withCredentials: true }
       );
-
-      console.log('Signup successful:', res.data);
       setSignupStatus('success');
       reset();
     } catch (error) {
