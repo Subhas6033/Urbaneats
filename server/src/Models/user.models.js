@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
     },
     mobileNumber: {
       type: String,
-      required: [true, 'Mobile Number is Required'],
       unique: true,
     },
     password: {

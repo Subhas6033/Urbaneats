@@ -2,7 +2,7 @@ import { User } from '../Models/user.models.js';
 import { APIERROR } from '../Utils/APIERR.js';
 import { APIRESPONSE } from '../Utils/APIRES.js';
 import { asyncHandeler } from '../Utils/AsyncHandeler.js';
-// import jwt from 'jsonwebtoken';
+import { SMTPClient } from 'emailjs';
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -27,21 +27,26 @@ const registerUser = asyncHandeler(async (req, res) => {
     `);
 
   // Validation for all fields are entered or not
-  if (
-    ![userName, email, mobileNumber, password].some(
-      (field) => field?.trim() === ''
-    )
-  ) {
+  if ([userName, email, password].some((field) => field?.trim() === '')) {
     throw new APIERROR(401, 'All the fields are needed');
   }
 
-  //   Check if user already exists or not
-  const existedUser = await User.findOne({
-    $or: [{ userName }, { email }],
+  //   Check if user already exists or not with the email
+  const existedUserWithEmail = await User.findOne({
+    $or: [{ email }],
   });
 
-  if (existedUser) {
+  if (existedUserWithEmail) {
     throw new APIERROR(400, 'User with this email already Exists');
+  }
+
+  // check if user already exists or not with the mobile number
+  const existedUserWithMobile = await User.findOne({
+    $or: [{ mobileNumber }],
+  });
+
+  if (existedUserWithMobile) {
+    throw new APIERROR(400, 'User with this mobile number already exists');
   }
 
   //   Create User

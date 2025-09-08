@@ -3,20 +3,20 @@ class APIERROR extends Error {
     statusCode,
     message = 'Something went wrong',
     errors = [],
-    stack
+    stack = ''
   ) {
     super(message);
-    ((statusCode = this.statusCode),
-      (message = this.message),
-      (errors = this.errors),
-      (stack = this.stack));
+
+    this.statusCode = statusCode;
+    this.message = message;
+    this.errors = errors;
+
+    if (stack) {
+      this.stack = stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
-
-// if (stack) {
-//   this.stack = stack;
-// } else {
-//   Error.captureStackTrace(this, this.constructor());
-// }
 
 export { APIERROR };

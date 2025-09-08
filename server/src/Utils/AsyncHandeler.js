@@ -3,7 +3,7 @@ export const asyncHandeler = (requestHandeler) => async (req, res, next) => {
     return await requestHandeler(req, res);
   } catch (error) {
     console.log('ERR from Async Handeler', error);
-    res.status(error.code || 500).json({
+    res.status(error.statusCode || 502).json({
       success: false,
       message: error.message,
     });
