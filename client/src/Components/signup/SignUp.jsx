@@ -55,7 +55,7 @@ useEffect(() => {
   const handleSendOtp = async () => {
     try {
       await axios.post(
-        'http://localhost:8000/api/v1/user/send-otp',
+        `${import.meta.env.BACKEND_URI}/api/v1/user/send-otp`,
         { userName: nameValue, email: emailValue },
         { withCredentials: true }
       );
@@ -72,7 +72,7 @@ useEffect(() => {
   const handleVerifyOtp = async () => {
     try {
       await axios.post(
-        'http://localhost:8000/api/v1/user/verify-otp',
+        `${import.meta.env.BACKEND_URI}/api/v1/user/verify-otp`,
         { otp },
         { withCredentials: true }
       );
@@ -87,7 +87,7 @@ useEffect(() => {
   const handleResendOtp = async () => {
     try {
       await axios.post(
-        'http://localhost:8000/api/v1/user/send-otp',
+        `${import.meta.env.BACKEND_URI}/api/v1/user/send-otp`,
         { userName: nameValue, email: emailValue },
         { withCredentials: true }
       );
@@ -104,7 +104,7 @@ useEffect(() => {
   const onSubmit = async (data) => {
     try {
       const res = await axios.post(
-        'http://localhost:8000/api/v1/user/signup',
+        `${import.meta.env.BACKEND_URI}/api/v1/user/signup`,
         {
           userName: data.name,
           email: data.email,
