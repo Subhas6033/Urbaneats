@@ -17,7 +17,7 @@ const sendOTPToUser = asyncHandeler(async (req, res) => {
   res.cookie('OTP', generatedOTP, {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 5 * 60 * 1000,
   });
 
