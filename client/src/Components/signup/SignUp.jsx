@@ -11,7 +11,7 @@ export default function SignupPage() {
   const [signupStatus, setSignupStatus] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
-  const [resendTimer, setResendTimer] = useState(0); // countdown timer
+  const [resendTimer, setResendTimer] = useState(0);
   const navigate = useNavigate();
 
   // Auto close modal after 3 seconds if success
@@ -21,7 +21,7 @@ export default function SignupPage() {
         if (signupStatus === 'success') {
           navigate('/');
         }
-        setSignupStatus(null); // reset for all statuses
+        setSignupStatus(null);
       }, 3000);
 
       return () => clearTimeout(timer);
@@ -50,8 +50,9 @@ export default function SignupPage() {
   const emailValue = watch('email');
   const nameValue = watch('name');
 
-  // 1️⃣ Send OTP
+  //  Send OTP
   const handleSendOtp = async () => {
+    // console.log(import.meta.env.VITE_BACKEND_URL);
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/send-otp`,
@@ -60,14 +61,14 @@ export default function SignupPage() {
       );
       setOtpSent(true);
       setSignupStatus('otpSent');
-      setResendTimer(60); // start countdown
+      setResendTimer(60);
     } catch (error) {
       console.error('Error sending OTP:', error);
       setSignupStatus('otpFail');
     }
   };
 
-  // 2️⃣ Verify OTP
+  // Verify OTP
   const handleVerifyOtp = async () => {
     try {
       await axios.post(
@@ -82,7 +83,7 @@ export default function SignupPage() {
     }
   };
 
-  // 3️⃣ Resend OTP
+  //  Resend OTP
   const handleResendOtp = async () => {
     try {
       await axios.post(
@@ -91,18 +92,18 @@ export default function SignupPage() {
         { withCredentials: true }
       );
       setSignupStatus('otpResent');
-      setOtp(''); // reset OTP field
-      setResendTimer(60); // lock for 60 seconds
+      setOtp(''); 
+      setResendTimer(60); 
     } catch (error) {
       console.error('Error resending OTP:', error);
       setSignupStatus('otpFail');
     }
   };
 
-  // 4️⃣ Final Signup
+  //  Final Signup
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/signup`,
         {
           userName: data.name,
