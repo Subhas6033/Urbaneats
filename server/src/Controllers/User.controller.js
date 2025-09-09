@@ -2,7 +2,7 @@ import { User } from '../Models/user.models.js';
 import { APIERROR } from '../Utils/APIERR.js';
 import { APIRESPONSE } from '../Utils/APIRES.js';
 import { asyncHandeler } from '../Utils/AsyncHandeler.js';
-import { uploadOnCloudinary } from '../Utils/Cloudinary/Cloudinary.js';
+import { sendEmail } from '../Utils/Email/Sendmail.js';
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -46,7 +46,6 @@ const registerUser = asyncHandeler(async (req, res) => {
     email,
     mobileNumber,
     password,
-    profilePhoto: photo.secure_url, // cloudinary url
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -55,6 +54,26 @@ const registerUser = asyncHandeler(async (req, res) => {
   if (!createdUser) {
     throw new APIERROR(502, 'Internal Server Error while creating the user');
   }
+
+  const subject = `🎉 Welcome to Urban Eats!`;
+  const message = `Hi ${userName},
+
+Welcome to **Urban Eats**! 🍽️  
+We’re thrilled to have you join our community of food lovers.  
+
+Here’s what you can do right away:
+👉 Explore delicious meals from top restaurants  
+👉 Save your favorite dishes  
+👉 Track your orders in real-time  
+
+We’re here to make every bite memorable.  
+
+Enjoy your culinary journey!  
+
+
+The Urban Eats Team 🍴`;
+
+  sendEmail(subject, message);
 
   //  Response matches frontend
   return res.status(200).json({

@@ -1,7 +1,7 @@
 import { asyncHandeler } from '../AsyncHandeler.js';
 import { APIERROR } from '../APIERR.js';
 import { APIRESPONSE } from '../APIRES.js';
-import { SMTPClient } from 'emailjs';
+import { sendEmail } from '../Email/Sendmail.js';
 
 const sendOTPToUser = asyncHandeler(async (req, res) => {
   console.log(`Coming from SEND OTP => ${req.body}`);
@@ -24,18 +24,9 @@ const sendOTPToUser = asyncHandeler(async (req, res) => {
     maxAge: 5 * 60 * 1000,
   });
 
-  const client = new SMTPClient({
-    user: process.env.EMAIL_USER,
-    password: process.env.EMAIL_PASSWORD,
-    host: process.env.EMAIL_HOST,
-    ssl: true,
-  });
-
   try {
-    const mailResponse = await new Promise((resolve, reject) => {
-      client.send(
-        {
-          text: `Hi ${userName},
+    const subject = `🔐 Verify Your Email - Urban Eats`;
+    const message = `Hi ${userName},
 
 Welcome to Urban Eats! 🎉
 Please use the following One-Time Password (OTP) to verify your email:
@@ -43,14 +34,8 @@ Please use the following One-Time Password (OTP) to verify your email:
 This OTP is valid for 5 minutes.
 
 Thank you,
-The Urban Eats Team`,
-          from: `Urban Eats <${process.env.EMAIL_USER}>`,
-          to: email,
-          subject: '🔐 Verify Your Email - Urban Eats',
-        },
-        (err, msg) => (err ? reject(err) : resolve(msg))
-      );
-    });
+The Urban Eats Team`;
+    const mailResponse = sendEmail(subject, message);
 
     res
       .status(200)
