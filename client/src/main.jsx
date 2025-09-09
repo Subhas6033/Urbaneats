@@ -25,6 +25,7 @@ import { Provider } from 'react-redux';
 import { store } from './Store/Store.js';
 import ErrorFallback from './Components/Err/ErrorBoundary.jsx';
 import { ErrorBoundary } from 'react-error-boundary';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const router = createBrowserRouter([
   {
@@ -100,9 +101,11 @@ createRoot(document.getElementById('root')).render(
       }}
     >
       <Provider store={store}>
-        <HelmetProvider>
-          <RouterProvider router={router} />
-        </HelmetProvider>
+        {/* <PersistGate loading={null} persistor={persistor}> */}
+          <HelmetProvider>
+            <RouterProvider router={router} />
+          </HelmetProvider>
+        {/* </PersistGate> */}
       </Provider>
     </ErrorBoundary>
   </StrictMode>

@@ -1,11 +1,14 @@
 import { asyncHandeler } from '../AsyncHandeler.js';
 import { APIERROR } from '../APIERR.js';
 import { APIRESPONSE } from '../APIRES.js';
-import {SMTPClient} from 'emailjs'
+import { SMTPClient } from 'emailjs';
 
 const sendOTPToUser = asyncHandeler(async (req, res) => {
+  console.log(`Coming from SEND OTP => ${req.body}`);
   const { userName, email } = req.body;
-
+  console.log(
+    `Coming from SEND OTP => Username :  ${userName} Email : ${email}`
+  );
   if (!userName || !email) {
     throw new APIERROR(400, 'Username and email are required');
   }
@@ -57,4 +60,4 @@ The Urban Eats Team`,
   }
 });
 
-export {sendOTPToUser}
+export { sendOTPToUser };

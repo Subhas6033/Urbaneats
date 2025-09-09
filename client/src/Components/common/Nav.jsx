@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Menu, User, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { navItems } from '../../Data/index';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // ✅ Get user from Redux
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <nav className="w-full text-lg bg-slate-50 shadow-md sticky top-0 z-50 overflow-x-hidden">
@@ -41,20 +45,29 @@ const Navbar = () => {
 
         {/* Order Button and User Sections */}
         <div className="hidden lg:flex items-center gap-5 px-6">
-          {/* User Icon */}
+          {/* User Profile / Signup */}
           <div>
-            <Link
-              to="/user/signup"
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition-colors shadow-md"
-            >
-              <User size={20} />
-            </Link>
+            {user ? (
+              <Link to="/user/profile" className="flex items-center gap-2">
+                <span className="font-medium text-emerald-700">
+                  {user.userName?.split(' ')[0] || 'Profile'}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                to="/user/signup"
+                className="px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition-colors shadow-md"
+              >
+                Signup
+              </Link>
+            )}
           </div>
+
           {/* Order Now Button */}
           <div>
             <Link
               to="/orders"
-              className="py-2 px-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
+              className="py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
             >
               Your Orders
             </Link>
@@ -104,16 +117,27 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* User Icon */}
+          {/* User Section */}
           <div className="mt-6 flex justify-center">
-            <Link
-              to="/user/signup"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition-colors shadow-md"
-            >
-              <User size={20} />
-              <span className="font-medium">Profile</span>
-            </Link>
+            {user ? (
+              <Link
+                to="/user/profile"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2"
+              >
+                <span className="font-medium text-emerald-400">
+                  {user.userName || 'Profile'}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                to="/user/signup"
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition-colors shadow-md"
+              >
+                Signup
+              </Link>
+            )}
           </div>
         </div>
       )}

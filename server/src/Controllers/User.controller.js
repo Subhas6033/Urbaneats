@@ -2,7 +2,7 @@ import { User } from '../Models/user.models.js';
 import { APIERROR } from '../Utils/APIERR.js';
 import { APIRESPONSE } from '../Utils/APIRES.js';
 import { asyncHandeler } from '../Utils/AsyncHandeler.js';
-import { SMTPClient } from 'emailjs';
+import { uploadOnCloudinary } from '../Utils/Cloudinary/Cloudinary.js';
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -20,37 +20,19 @@ const generateAccessAndRefreshTokens = async (userId) => {
 // Register the Users
 const registerUser = asyncHandeler(async (req, res) => {
   const { userName, email, mobileNumber, password } = req.body;
-  console.log(`
-    User Name : ${userName},
-    Email : ${email},
-    Mobile Number : ${mobileNumber},
-    Password : ${password}
-    `);
 
-  // Validation for all fields are entered or not
-  if ([userName, email, password].some((field) => field?.trim() === '')) {
-    throw new APIERROR(401, 'All the fields are needed');
+  //  Validate required fields
+  if ([userName, email, password].some((field) => !field?.trim() === '')) {
+    throw new APIERROR(401, 'All fields are required');
   }
 
-  //   Check if user already exists or not with the email
-  const existedUserWithEmail = await User.findOne({
-    $or: [{ email }],
-  });
-
+  //  Check duplicates
+  const existedUserWithEmail = await User.findOne({ email });
   if (existedUserWithEmail) {
-    throw new APIERROR(400, 'User with this email already Exists');
+    throw new APIERROR(400, 'User with this email already exists');
   }
 
-  // check if user already exists or not with the mobile number
-  const existedUserWithMobile = await User.findOne({
-    $or: [{ mobileNumber }],
-  });
-
-  if (existedUserWithMobile) {
-    throw new APIERROR(400, 'User with this mobile number already exists');
-  }
-
-  // Validate the OTP before creating the user
+  //  Ensure OTP verified
   if (!req.cookies?.isEmailVerified) {
     throw new APIERROR(
       401,
@@ -58,29 +40,28 @@ const registerUser = asyncHandeler(async (req, res) => {
     );
   }
 
-  //   Create User
+  //  Create user
   const user = await User.create({
     userName,
     email,
     mobileNumber,
     password,
+    profilePhoto: photo.secure_url, // cloudinary url
   });
 
-  //   Find the user and remove the password and refresh token from them
   const createdUser = await User.findById(user._id).select(
     '-password -refreshToken'
   );
-  console.log('Created User Details : ', createdUser);
-
-  //   Check if user created or not
   if (!createdUser) {
     throw new APIERROR(502, 'Internal Server Error while creating the user');
   }
 
-  //   Sent the response
-  return res
-    .status(200)
-    .json(new APIRESPONSE(200, createdUser, 'User Created Successfully'));
+  //  Response matches frontend
+  return res.status(200).json({
+    status: 'success',
+    user: createdUser,
+    message: 'Successfully created the User',
+  });
 });
 
 const loginUser = asyncHandeler(async (req, res) => {
