@@ -16,10 +16,6 @@ const userSchema = new mongoose.Schema(
       lowecase: true,
       trim: true,
     },
-    profilePhoto: {
-      type: String,
-      required: true,
-    },
     mobileNumber: {
       type: String,
       unique: true,

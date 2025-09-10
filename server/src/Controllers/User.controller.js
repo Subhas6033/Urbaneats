@@ -58,7 +58,7 @@ const registerUser = asyncHandeler(async (req, res) => {
   const subject = `🎉 Welcome to Urban Eats!`;
   const message = `Hi ${userName},
 
-Welcome to **Urban Eats**! 🍽️  
+Welcome to Urban Eats! 🍽️  
 We’re thrilled to have you join our community of food lovers.  
 
 Here’s what you can do right away:
@@ -73,13 +73,14 @@ Enjoy your culinary journey!
 
 The Urban Eats Team 🍴`;
 
-  sendEmail(subject, message);
+  const mailResponse = await sendEmail(email, subject, message);
 
   //  Response matches frontend
   return res.status(200).json({
     status: 'success',
     user: createdUser,
     message: 'Successfully created the User',
+    mailResponse,
   });
 });
 

@@ -4,11 +4,7 @@ import { APIRESPONSE } from '../APIRES.js';
 import { sendEmail } from '../Email/Sendmail.js';
 
 const sendOTPToUser = asyncHandeler(async (req, res) => {
-  console.log(`Coming from SEND OTP => ${req.body}`);
   const { userName, email } = req.body;
-  console.log(
-    `Coming from SEND OTP => Username :  ${userName} Email : ${email}`
-  );
   if (!userName || !email) {
     throw new APIERROR(400, 'Username and email are required');
   }
@@ -35,7 +31,8 @@ This OTP is valid for 5 minutes.
 
 Thank you,
 The Urban Eats Team`;
-    const mailResponse = sendEmail(subject, message);
+
+    const mailResponse = await sendEmail(email, subject, message);
 
     res
       .status(200)
