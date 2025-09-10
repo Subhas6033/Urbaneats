@@ -2,6 +2,7 @@ import { asyncHandeler } from '../AsyncHandeler.js';
 import { APIERROR } from '../APIERR.js';
 import { APIRESPONSE } from '../APIRES.js';
 import { sendEmail } from '../Email/Sendmail.js';
+import {User} from '../../Models/user.models.js'
 
 const sendOTPToUser = asyncHandeler(async (req, res) => {
   const { userName, email } = req.body;
@@ -9,6 +10,10 @@ const sendOTPToUser = asyncHandeler(async (req, res) => {
     throw new APIERROR(400, 'Username and email are required');
   }
 
+  const existedUser = await User.findOne({ email });
+  if (existedUser) {
+    throw new APIERROR(400, 'User With this email already exists');
+  }
   // Generate 6-digit OTP
   const generatedOTP = Math.floor(100000 + Math.random() * 900000);
 

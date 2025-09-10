@@ -26,12 +26,6 @@ const registerUser = asyncHandeler(async (req, res) => {
     throw new APIERROR(401, 'All fields are required');
   }
 
-  //  Check duplicates
-  const existedUserWithEmail = await User.findOne({ email });
-  if (existedUserWithEmail) {
-    throw new APIERROR(400, 'User with this email already exists');
-  }
-
   //  Ensure OTP verified
   if (!req.cookies?.isEmailVerified) {
     throw new APIERROR(
@@ -74,6 +68,13 @@ Enjoy your culinary journey!
 The Urban Eats Team 🍴`;
 
   const mailResponse = await sendEmail(email, subject, message);
+
+  // Remove the OTP from user cookies
+  res.clearCookie('OTP', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  });
 
   //  Response matches frontend
   return res.status(200).json({

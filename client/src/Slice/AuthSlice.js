@@ -14,6 +14,10 @@ export const sendOtp = createAsyncThunk(
       });
       return 'otpSent';
     } catch (err) {
+      if (err.response?.status === 400) {
+        const message = err.response.data.message || '';
+        if (message.includes('email')) return rejectWithValue('duplicateEmail');
+      }
       console.error(err);
       return rejectWithValue('otpFail');
     }
@@ -53,12 +57,6 @@ export const signup = createAsyncThunk(
       return rejectWithValue('fail');
     } catch (err) {
       console.log(err);
-      if (err.response?.status === 400) {
-        const message = err.response.data.message || '';
-        if (message.includes('email')) return rejectWithValue('duplicateEmail');
-        if (message.includes('mobile'))
-          return rejectWithValue('duplicateMobile');
-      }
       return rejectWithValue('fail');
     }
   }

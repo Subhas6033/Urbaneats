@@ -254,30 +254,33 @@ export default function SignupPage() {
               >
                 {status === 'success' && (
                   <p className="text-lg font-semibold text-green-600">
-                    🎉 Signup Successful! Redirecting...
+                    🎉 Account created successfully! Redirecting to home...
                   </p>
                 )}
                 {status === 'fail' && (
                   <p className="text-lg font-semibold">
-                    Signup Failed. Please try again.
+                    Signup failed. Please check your details and try again.
                   </p>
                 )}
                 {status === 'duplicateEmail' && (
                   <p className="text-lg font-semibold">
-                    User already exists with this email.
+                    🚨 An account with this email already exists. Please log in
+                    instead.
                   </p>
                 )}
                 {status === 'otpSent' && (
-                  <p className="text-lg font-semibold">OTP Sent To Your Mail</p>
+                  <p className="text-lg font-semibold">
+                    ✅ OTP has been sent to your email. Please check your inbox.
+                  </p>
                 )}
                 {status === 'otpInvalid' && (
                   <p className="text-lg font-semibold">
-                    Invalid OTP. Please enter the valid OTP.
+                    ⚠️ The OTP you entered is incorrect. Please try again.
                   </p>
                 )}
                 {status === 'otpFail' && (
                   <p className="text-lg font-semibold">
-                    ❌ Failed to send OTP. Try again later.
+                    ❌ We couldn’t send the OTP. Please try again later.
                   </p>
                 )}
               </motion.div>
