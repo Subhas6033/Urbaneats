@@ -1,7 +1,6 @@
 import { asyncHandeler } from '../AsyncHandeler.js';
 import { APIERROR } from '../APIERR.js';
 import { APIRESPONSE } from '../APIRES.js';
-import { User } from '../../Models/user.models.js';
 
 const verifyOTP = asyncHandeler(async (req, res) => {
   const { otp } = req.body;

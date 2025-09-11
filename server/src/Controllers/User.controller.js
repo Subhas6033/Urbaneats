@@ -1,9 +1,11 @@
+import bcrypt from 'bcrypt';
 import { User } from '../Models/user.models.js';
 import { APIERROR } from '../Utils/APIERR.js';
 import { APIRESPONSE } from '../Utils/APIRES.js';
 import { asyncHandeler } from '../Utils/AsyncHandeler.js';
 import { sendEmail } from '../Utils/Email/Sendmail.js';
-import bcrypt from 'bcrypt';
+import { uploadOnCloudinary } from '../Utils/Cloudinary/Cloudinary.js';
+import fs from 'fs';
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -34,6 +36,11 @@ const registerUser = asyncHandeler(async (req, res) => {
       'Please verify your email with OTP before registering'
     );
   }
+
+  res.cookie('email', {
+    httpOnly: true,
+    secure: true,
+  });
 
   // Remove the OTP from user cookies
   res.clearCookie('OTP', {
@@ -107,6 +114,11 @@ const loginUser = asyncHandeler(async (req, res) => {
   const loggedInUser = await User.findById(userDetails._id).select(
     '-password -refreshToken'
   );
+
+  res.cookie('email', userDetails.email, {
+    httpOnly: true,
+    secure: true,
+  });
 
   res
     .status(200)
@@ -182,10 +194,46 @@ const getProfileByUserName = asyncHandeler(async (req, res) => {
     .json(new APIRESPONSE(200, user, 'Successfully Fetched the User profile'));
 });
 
+const uploadProfilePhoto = asyncHandeler(async (req, res) => {
+  const file = req.file;
+  if (!file) throw new APIERROR(400, 'Upload the Profile Photo');
+
+  const cloudRes = await uploadOnCloudinary(file.path);
+
+  if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+
+  if (!cloudRes) {
+    throw new APIERROR(502, 'Profile photo not uploaded to Cloudinary');
+  }
+
+  // Get user email from authenticated session or token
+  const userEmail = req.cookies?.email;
+  console.log(userEmail);
+  if (!userEmail) throw new APIERROR(401, 'Unauthorized');
+
+  // Update user profile photo
+  const user = await User.findOneAndUpdate(
+    { email: userEmail },
+    { $set: { profilePhoto: cloudRes.secure_url } },
+    { new: true, select: '-password -refreshToken' }
+  );
+
+  res
+    .status(200)
+    .json(
+      new APIRESPONSE(
+        200,
+        { photo: user.profilePhoto },
+        'Profile photo updated successfully'
+      )
+    );
+});
+
 export {
   generateAccessAndRefreshTokens,
   registerUser,
   loginUser,
   forgotPassword,
   getProfileByUserName,
+  uploadProfilePhoto,
 };
