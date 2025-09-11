@@ -7,12 +7,6 @@ const client = new SMTPClient({
   ssl: true,
 });
 
-console.log(`Coming from  =>
-  User : ${process.env.EMAIL_USER}
-  Password : ${process.env.EMAIL_PASSWORD}
-  Host : ${process.env.EMAIL_HOST}
-  `);
-
 /**
  * Send an email using the SMTP client.
  * @param {string} to - Recipient email address

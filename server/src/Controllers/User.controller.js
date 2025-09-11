@@ -3,6 +3,7 @@ import { APIERROR } from '../Utils/APIERR.js';
 import { APIRESPONSE } from '../Utils/APIRES.js';
 import { asyncHandeler } from '../Utils/AsyncHandeler.js';
 import { sendEmail } from '../Utils/Email/Sendmail.js';
+import bcrypt from 'bcrypt';
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -33,6 +34,13 @@ const registerUser = asyncHandeler(async (req, res) => {
       'Please verify your email with OTP before registering'
     );
   }
+
+  // Remove the OTP from user cookies
+  res.clearCookie('OTP', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  });
 
   //  Create user
   const user = await User.create({
@@ -69,13 +77,6 @@ The Urban Eats Team 🍴`;
 
   const mailResponse = await sendEmail(email, subject, message);
 
-  // Remove the OTP from user cookies
-  res.clearCookie('OTP', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-  });
-
   //  Response matches frontend
   return res.status(200).json({
     status: 'success',
@@ -87,28 +88,18 @@ The Urban Eats Team 🍴`;
 
 const loginUser = asyncHandeler(async (req, res) => {
   const { email, password } = req.body;
-  console.log('Registered user email and Password : ', email, password);
-  //   Validation for all fields are entered or not
-  if (![email, password].some((field) => field.trim() === '')) {
+
+  if ([email, password].some((field) => field.trim() === '')) {
     throw new APIERROR(401, 'All fields are Required');
   }
 
-  //   Find the user from DB
-  const userDetails = await User.findOne({
-    $or: [{ userName }, { email }],
-  });
+  const userDetails = await User.findOne({ email });
+  if (!userDetails)
+    throw new APIERROR(400, 'User not found, Please Signup first');
 
-  //   Check if the user exists or not
-  if (!userDetails) throw new APIERROR(400, 'User not found');
-  // Validate the user details
-  const isPasswordValid = await User.isPasswordCorrect(password);
+  const isPasswordValid = await userDetails.isPasswordCorrect(password);
+  if (!isPasswordValid) throw new APIERROR(401, 'Password is not Correct');
 
-  // check if password is ok or not
-  if (!isPasswordValid) {
-    throw new APIERROR(401, 'Password is not Correct');
-  }
-
-  //   Generate access and refresh token and save in DB
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     userDetails._id
   );
@@ -117,16 +108,10 @@ const loginUser = asyncHandeler(async (req, res) => {
     '-password -refreshToken'
   );
 
-  //   Save the data in Cookies
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
-  return res
+  res
     .status(200)
-    .cookie('accessToken', accessToken, options)
-    .cookie('refreshToken', refreshToken, options)
+    .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
+    .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
     .json(
       new APIRESPONSE(
         200,
@@ -140,4 +125,67 @@ const loginUser = asyncHandeler(async (req, res) => {
     );
 });
 
-export { generateAccessAndRefreshTokens, registerUser, loginUser };
+const forgotPassword = asyncHandeler(async (req, res) => {
+  console.log(`From Forgot Password Controllers => ${req.body}`);
+  const { email, newPassWord, confirmPassword } = req.body;
+  console.log(
+    `Coming From Forgot Password COntrollers => ${newPassWord} ${confirmPassword}`
+  );
+
+  if (
+    [email, newPassWord, confirmPassword].some((field) => field.trim() === '')
+  ) {
+    throw new APIERROR(401, 'All Fields Required');
+  }
+
+  if (!(newPassWord === confirmPassword)) {
+    throw new APIERROR(401, 'New Password and Confirm Password must be same');
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new APIERROR(404, 'User not found. Please Sign up first');
+  }
+
+  const deletedPassword = await User.updateOne(
+    { email: user.email },
+    { $set: { password: '' } }
+  );
+
+  console.log(deletedPassword);
+
+  const hashPassword = await bcrypt.hash(confirmPassword, 10);
+  user.password = hashPassword;
+
+  await User.updateOne(
+    { email: user.email },
+    { $set: { password: hashPassword } }
+  );
+
+  res
+    .status(200)
+    .json(new APIRESPONSE(200, 'Successfully Set the new Password'));
+});
+
+const getProfileByUserName = asyncHandeler(async (req, res) => {
+  const { userName } = req.params;
+
+  const user = await User.findOne({
+    userName: { $regex: `^${userName}$`, $options: 'i' }, // 'i' = case-insensitive
+  }).select('-refreshToken -password');
+  if (!user) {
+    throw new APIERROR(404, 'User Not Found!');
+  }
+
+  res
+    .status(200)
+    .json(new APIRESPONSE(200, user, 'Successfully Fetched the User profile'));
+});
+
+export {
+  generateAccessAndRefreshTokens,
+  registerUser,
+  loginUser,
+  forgotPassword,
+  getProfileByUserName,
+};

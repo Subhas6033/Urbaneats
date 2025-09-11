@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-//  Send OTP
+// Send OTP
 export const sendOtp = createAsyncThunk(
   'auth/sendOtp',
   async (formData, { rejectWithValue }) => {
@@ -15,7 +15,7 @@ export const sendOtp = createAsyncThunk(
       return 'otpSent';
     } catch (err) {
       if (err.response?.status === 400) {
-        const message = err.response.data.message || '';
+        const message = err.response.data?.message || '';
         if (message.includes('email')) return rejectWithValue('duplicateEmail');
       }
       console.error(err);
@@ -41,7 +41,7 @@ export const verifyOtp = createAsyncThunk(
   }
 );
 
-// Final Signup
+// Signup
 export const signup = createAsyncThunk(
   'auth/signup',
   async (formData, { rejectWithValue }) => {
@@ -51,13 +51,32 @@ export const signup = createAsyncThunk(
         headers: { 'Content-Type': 'application/json' },
       });
 
-      if (res.data?.user) {
-        return { status: 'success', user: res.data.user };
-      }
+      const { user } = res.data || {};
+      if (user) return { status: 'success', user };
       return rejectWithValue('fail');
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return rejectWithValue('fail');
+    }
+  }
+);
+
+// Login
+export const login = createAsyncThunk(
+  'auth/login',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(`${API_URL}/api/v1/user/login`, formData, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const { user } = res.data.data;
+      if (user) return { status: 'loggedIn', user };
+      return rejectWithValue('loginFail');
+    } catch (err) {
+      console.error(err);
+      return rejectWithValue('loginFail');
     }
   }
 );
@@ -76,6 +95,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.status = null;
+      state.loading = false;
     },
   },
   extraReducers: (builder) => {
@@ -114,6 +134,20 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(signup.rejected, (state, action) => {
+        state.loading = false;
+        state.status = action.payload;
+        state.user = null;
+      })
+      // login
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.status = action.payload.status;
+        state.user = action.payload.user;
+      })
+      .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.status = action.payload;
         state.user = null;

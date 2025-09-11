@@ -2,10 +2,11 @@ import { asyncHandeler } from '../AsyncHandeler.js';
 import { APIERROR } from '../APIERR.js';
 import { APIRESPONSE } from '../APIRES.js';
 import { sendEmail } from '../Email/Sendmail.js';
-import {User} from '../../Models/user.models.js'
+import { User } from '../../Models/user.models.js';
 
 const sendOTPToUser = asyncHandeler(async (req, res) => {
   const { userName, email } = req.body;
+  console.log(req.body);
   if (!userName || !email) {
     throw new APIERROR(400, 'Username and email are required');
   }
@@ -37,11 +38,9 @@ This OTP is valid for 5 minutes.
 Thank you,
 The Urban Eats Team`;
 
-    const mailResponse = await sendEmail(email, subject, message);
+    await sendEmail(email, subject, message);
 
-    res
-      .status(200)
-      .json(new APIRESPONSE(200, mailResponse, 'Successfully sent the Email'));
+    res.status(200).json(new APIRESPONSE(200, 'Successfully sent the Email'));
   } catch (error) {
     throw new APIERROR(502, 'Failed to send OTP email');
   }

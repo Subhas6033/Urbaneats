@@ -13,6 +13,7 @@ import LoginComp from './login/Login';
 import Input from './common/Input';
 import PageLoader from './Loader/Loader';
 import ScrollToTop from './common/ScrollToTop';
+import Popup from './Popup/Popup';
 
 export {
   Layout,
@@ -30,4 +31,5 @@ export {
   Input,
   PageLoader,
   ScrollToTop,
+  Popup,
 };

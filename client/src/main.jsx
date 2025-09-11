@@ -19,6 +19,7 @@ import {
   CateringBookPage,
   Signup,
   Login,
+  Profile
 } from './Pages/index';
 
 import { Provider } from 'react-redux';
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
         path: '/user/login',
         element: <Login />,
       },
+      {
+        path: '/user/profile/:userName',
+        element : <Profile />
+      }
     ],
   },
 ]);
