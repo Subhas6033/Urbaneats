@@ -30,16 +30,12 @@ export default function SignupPage() {
   const emailValue = watch('email');
   const userNameValue = watch('userName');
 
-  // Auto close modal + navigate after signup success
+  // Handle status changes
   useEffect(() => {
     if (status) {
       const timer = setTimeout(() => {
-        if (status === 'success') {
-          navigate('/');
-        }
-        if (status === 'otpVerified') {
-          setIsOtpVerified(true);
-        }
+        if (status === 'success') navigate('/');
+        if (status === 'otpVerified') setIsOtpVerified(true);
         dispatch(resetStatus());
       }, 3000);
       return () => clearTimeout(timer);
@@ -49,14 +45,14 @@ export default function SignupPage() {
   // Resend OTP countdown
   useEffect(() => {
     if (resendTimer > 0) {
-      const timerId = setInterval(() => {
-        setResendTimer((prev) => prev - 1);
-      }, 1000);
+      const timerId = setInterval(
+        () => setResendTimer((prev) => prev - 1),
+        1000
+      );
       return () => clearInterval(timerId);
     }
   }, [resendTimer]);
 
-  // Send OTP
   const handleSendOtp = async () => {
     setOtpLoading(true);
     try {
@@ -68,7 +64,6 @@ export default function SignupPage() {
     }
   };
 
-  // Verify OTP
   const handleVerifyOtp = async () => {
     setOtpLoading(true);
     try {
@@ -78,7 +73,6 @@ export default function SignupPage() {
     }
   };
 
-  // Resend OTP
   const handleResendOtp = async () => {
     setOtpLoading(true);
     try {
@@ -90,10 +84,13 @@ export default function SignupPage() {
     }
   };
 
-  // Submit signup data (only after OTP verified)
+  // Submit signup data (now sending plain JSON)
   const onSubmit = async (data) => {
     try {
-      await dispatch(signup(data)).unwrap();
+      const { userName, email, mobileNumber, password } = data;
+      await dispatch(
+        signup({ userName, email, mobileNumber, password })
+      ).unwrap();
       reset();
     } catch (err) {
       console.error('Signup failed:', err);
@@ -111,7 +108,6 @@ export default function SignupPage() {
             Fresh flavors, delivered to your doorstep.
           </p>
 
-          {/* Signup Form */}
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             <Input
               id="userName"
@@ -133,7 +129,7 @@ export default function SignupPage() {
               error={errors.email?.message}
             />
 
-            {/* OTP Flow */}
+            {/* OTP Section */}
             {!otpSent ? (
               <Button
                 type="button"
@@ -155,7 +151,6 @@ export default function SignupPage() {
                     onChange={(e) => setOtp(e.target.value)}
                   />
                 )}
-
                 <div className="flex gap-2 mt-2">
                   <Button
                     type="button"
@@ -173,7 +168,6 @@ export default function SignupPage() {
                       'Verify OTP'
                     )}
                   </Button>
-
                   {!isOtpVerified && (
                     <Button
                       type="button"

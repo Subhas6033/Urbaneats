@@ -44,22 +44,32 @@ export const verifyOtp = createAsyncThunk(
 // Signup
 export const signup = createAsyncThunk(
   'auth/signup',
-  async (formData, { rejectWithValue }) => {
+  async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/api/v1/user/signup`, formData, {
+      // Send plain JSON payload without profile photo
+      const res = await axios.post(`${API_URL}/api/v1/user/signup`, userData, {
         withCredentials: true,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
-      const { user } = res.data || {};
-      if (user) return { status: 'success', user };
-      return rejectWithValue('fail');
+      console.log('Signup response:', res);
+
+      // Extract the user directly from the backend response
+      const user = res.data?.user;
+      if (user) {
+        return { status: res.data.status, user };
+      }
+
+      return rejectWithValue('Signup failed: User data missing in response');
     } catch (err) {
-      console.error(err);
-      return rejectWithValue('fail');
+      console.error('Signup Error:', err.response?.data || err.message);
+      return rejectWithValue(err.response?.data?.message || 'Signup failed');
     }
   }
 );
+
 
 // Login
 export const login = createAsyncThunk(

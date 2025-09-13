@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { type } from 'os';
 
 const userSchema = new mongoose.Schema(
   {
@@ -23,10 +22,6 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Password is Required'],
       min: [6, 'Password must be at least 6 characters'],
       max: [15, 'Maximum 15 characters'],
-    },
-    profilePhoto: {
-      type: String,
-      required: Boolean,
     },
     refreshToken: String,
   },
