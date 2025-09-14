@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-// Send OTP
+//  Send OTP
 export const sendOtp = createAsyncThunk(
   'auth/sendOtp',
   async (formData, { rejectWithValue }) => {
@@ -16,15 +16,17 @@ export const sendOtp = createAsyncThunk(
     } catch (err) {
       if (err.response?.status === 400) {
         const message = err.response.data?.message || '';
-        if (message.includes('email')) return rejectWithValue('duplicateEmail');
+        if (message.includes('email')) {
+          return rejectWithValue('duplicateEmail');
+        }
       }
-      console.error(err);
+      console.error('Send OTP error:', err);
       return rejectWithValue('otpFail');
     }
   }
 );
 
-// Verify OTP
+//  Verify OTP
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
   async (formData, { rejectWithValue }) => {
@@ -35,43 +37,47 @@ export const verifyOtp = createAsyncThunk(
       });
       return 'otpVerified';
     } catch (err) {
-      console.error(err);
+      console.error('Verify OTP error:', err);
       return rejectWithValue('otpInvalid');
     }
   }
 );
 
-// Signup
+//  Signup
 export const signup = createAsyncThunk(
   'auth/signup',
   async (userData, { rejectWithValue }) => {
     try {
-      // Send plain JSON payload without profile photo
       const res = await axios.post(`${API_URL}/api/v1/user/signup`, userData, {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       });
 
       console.log('Signup response:', res);
 
-      // Extract the user directly from the backend response
-      const user = res.data?.user;
-      if (user) {
-        return { status: res.data.status, user };
+      const user = res.data?.data; // ✅ backend sends user inside `data`
+      if (!user) {
+        return rejectWithValue('fail');
       }
 
-      return rejectWithValue('Signup failed: User data missing in response');
+      return { status: 'success', user };
     } catch (err) {
       console.error('Signup Error:', err.response?.data || err.message);
-      return rejectWithValue(err.response?.data?.message || 'Signup failed');
+
+      // Handle duplicate email
+      if (
+        err.response?.data?.message &&
+        err.response.data.message.includes('duplicate key')
+      ) {
+        return rejectWithValue('duplicateEmail');
+      }
+
+      return rejectWithValue('fail');
     }
   }
 );
 
-
-// Login
+//  Login
 export const login = createAsyncThunk(
   'auth/login',
   async (formData, { rejectWithValue }) => {
@@ -81,11 +87,12 @@ export const login = createAsyncThunk(
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const { user } = res.data.data;
-      if (user) return { status: 'loggedIn', user };
-      return rejectWithValue('loginFail');
+      const user = res.data?.data?.user || res.data?.data;
+      if (!user) return rejectWithValue('loginFail');
+
+      return { status: 'loggedIn', user };
     } catch (err) {
-      console.error(err);
+      console.error('Login Error:', err);
       return rejectWithValue('loginFail');
     }
   }
@@ -110,56 +117,56 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // sendOtp
+      //  Send OTP
       .addCase(sendOtp.pending, (state) => {
         state.loading = true;
       })
       .addCase(sendOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'otpSent'
       })
       .addCase(sendOtp.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'duplicateEmail' or 'otpFail'
       })
-      // verifyOtp
+      //  Verify OTP
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'otpVerified'
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'otpInvalid'
       })
-      // signup
+      //  Signup
       .addCase(signup.pending, (state) => {
         state.loading = true;
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload.status;
+        state.status = action.payload.status; // 'success'
         state.user = action.payload.user;
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'fail' or 'duplicateEmail'
         state.user = null;
       })
-      // login
+      //  Login
       .addCase(login.pending, (state) => {
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload.status;
+        state.status = action.payload.status; // 'loggedIn'
         state.user = action.payload.user;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'loginFail'
         state.user = null;
       });
   },

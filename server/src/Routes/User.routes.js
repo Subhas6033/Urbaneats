@@ -5,9 +5,9 @@ import {
   forgotPassword,
   getProfileByUserName,
   uploadProfilePhoto,
+  logoutUser,
 } from '../Controllers/User.controller.js';
-import { sendOTPToUser } from '../Utils/OTP/sendOTP.js';
-import { verifyOTP } from '../Utils/OTP/verifyOTP.js';
+import {sendOTPToUser, verifyOTP} from '../Utils/index.js'
 import { upload } from '../Middleware/Multer.middleware.js';
 
 const router = Router();
@@ -21,5 +21,6 @@ router
 router.route('/send-otp').post(sendOTPToUser);
 router.route('/verify-otp').post(verifyOTP);
 router.route('/forgot-password').post(forgotPassword);
+router.route('/logout').post(logoutUser);
 
 export default router;

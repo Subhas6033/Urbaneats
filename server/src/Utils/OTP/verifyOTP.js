@@ -1,6 +1,4 @@
-import { asyncHandeler } from '../AsyncHandeler.js';
-import { APIERROR } from '../APIERR.js';
-import { APIRESPONSE } from '../APIRES.js';
+import {asyncHandeler, APIERROR, APIRESPONSE} from '../index.js'
 
 const verifyOTP = asyncHandeler(async (req, res) => {
   const { otp } = req.body;

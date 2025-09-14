@@ -1,10 +1,12 @@
 import bcrypt from 'bcrypt';
 import { User } from '../Models/user.models.js';
-import { APIERROR } from '../Utils/APIERR.js';
-import { APIRESPONSE } from '../Utils/APIRES.js';
-import { asyncHandeler } from '../Utils/AsyncHandeler.js';
-import { sendEmail } from '../Utils/Email/Sendmail.js';
-import { uploadOnCloudinary } from '../Utils/Cloudinary/Cloudinary.js';
+import {
+  asyncHandeler,
+  APIERROR,
+  APIRESPONSE,
+  sendEmail,
+  uploadOnCloudinary,
+} from '../Utils/index.js';
 import fs from 'fs';
 
 // -------------------- TOKEN GENERATION --------------------
@@ -40,7 +42,6 @@ const registerUser = asyncHandeler(async (req, res) => {
     );
   }
 
-
   // Create user
   const user = await User.create({
     userName,
@@ -54,6 +55,19 @@ const registerUser = asyncHandeler(async (req, res) => {
   );
   if (!createdUser) {
     throw new APIERROR(502, 'Internal Server Error while creating the user');
+  }
+
+  const createdUserProfile = createdUser.toObject();
+  if (
+    !createdUserProfile.profilePhoto ||
+    !createdUserProfile.points ||
+    !createdUserProfile.role
+  ) {
+    createdUserProfile.profilePhoto =
+      'https://th.bing.com/th/id/R.8e2c571ff125b3531705198a15d3103c?rik=gzhbzBpXBa%2bxMA&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fuser-png-icon-big-image-png-2240.png&ehk=VeWsrun%2fvDy5QDv2Z6Xm8XnIMXyeaz2fhR3AgxlvxAc%3d&risl=&pid=ImgRaw&r=0';
+
+    createdUserProfile.points = 0;
+    createdUserProfile.role = 'customer';
   }
 
   // Send welcome email
@@ -75,12 +89,17 @@ The Urban Eats Team 🍴`;
   // Clean up cookies
   res.clearCookie('OTP', { httpOnly: true, secure: true, sameSite: 'none' });
 
-  return res.status(200).json({
-    status: 'success',
-    user: createdUser,
-    message: 'Successfully created the User',
-    mailResponse,
-  });
+  return res
+    .status(201)
+    .json(
+      new APIRESPONSE(
+        201,
+        createdUser,
+        `User registered successfully. ${
+          mailResponse ? 'Welcome email sent!' : 'Failed to send welcome email'
+        }`
+      )
+    );
 });
 
 // LOGIN USER
@@ -155,6 +174,13 @@ const getProfileByUserName = asyncHandeler(async (req, res) => {
   }).select('-refreshToken -password');
 
   if (!user) throw new APIERROR(404, 'User Not Found!');
+  // user = URLSearchParams.toobject()
+
+  // Ensure a profile photo exists, otherwise fallback to default
+  if (!user.profilePhoto) {
+    user.profilePhoto =
+      'https://th.bing.com/th/id/R.8e2c571ff125b3531705198a15d3103c?rik=gzhbzBpXBa%2bxMA&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fuser-png-icon-big-image-png-2240.png&ehk=VeWsrun%2fvDy5QDv2Z6Xm8XnIMXyeaz2fhR3AgxlvxAc%3d&risl=&pid=ImgRaw&r=0';
+  }
 
   res
     .status(200)
@@ -180,7 +206,7 @@ const uploadProfilePhoto = asyncHandeler(async (req, res) => {
     userId,
     { profilePhoto: cloudRes.secure_url },
     { new: true, select: '-password -refreshToken' }
-  ).select("-password -refreshToken");
+  ).select('-password -refreshToken');
 
   res
     .status(200)
@@ -193,6 +219,36 @@ const uploadProfilePhoto = asyncHandeler(async (req, res) => {
     );
 });
 
+// Logout User
+const logoutUser = asyncHandeler(async (req, res) => {
+  // 1. Get refresh token from cookies
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(204).json({ message: 'No refresh token found' });
+  }
+
+  // 2. Find the user with this refresh token
+  const user = await User.findOne({ refreshToken });
+
+  if (user) {
+    // 3. Remove refresh token from DB
+    user.refreshToken = '';
+    await user.save();
+  }
+
+  // 4. Clear refresh token cookie
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: true, // set to true if using https
+    sameSite: 'none',
+  });
+
+  res
+    .status(200)
+    .json({ status: 'success', message: 'Logged out successfully' });
+});
+
 export {
   generateAccessAndRefreshTokens,
   registerUser,
@@ -200,4 +256,5 @@ export {
   forgotPassword,
   getProfileByUserName,
   uploadProfilePhoto,
+  logoutUser,
 };

@@ -14,6 +14,7 @@ import Input from './common/Input';
 import PageLoader from './Loader/Loader';
 import ScrollToTop from './common/ScrollToTop';
 import Popup from './Popup/Popup';
+import Modal from './common/Modal';
 
 export {
   Layout,
@@ -32,4 +33,5 @@ export {
   PageLoader,
   ScrollToTop,
   Popup,
+  Modal,
 };
