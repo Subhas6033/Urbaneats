@@ -3,17 +3,22 @@
 
 <head>
   <!-- Charset and Viewport -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Primary Meta Tags -->
   <title>Urban Eats | Fresh Food Delivered</title>
   <meta name="title" content="Urban Eats | Fresh Food Delivered">
   <meta name="description"
     content="Urban Eats delivers premium, fresh, and delicious meals to your doorstep. Order online or explore our menu and offers.">
+  <meta name="keywords" content="Food Delivery, Fresh Meals, Online Ordering, Urban Eats, Restaurant, Healthy Food">
+  <meta name="author" content="Urban Eats">
 
   <!-- Favicon -->
-  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://urbaneatsresturent.vercel.app/">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -22,6 +27,8 @@
   <meta property="og:description"
     content="Urban Eats delivers premium, fresh, and delicious meals to your doorstep. Order online or explore our menu and offers.">
   <meta property="og:image" content="image.png">
+  <meta property="og:image:alt" content="Delicious meals from Urban Eats">
+  <meta property="og:site_name" content="Urban Eats">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
@@ -30,10 +37,35 @@
   <meta property="twitter:description"
     content="Urban Eats delivers premium, fresh, and delicious meals to your doorstep. Order online or explore our menu and offers.">
   <meta property="twitter:image" content="image.png">
+  <meta property="twitter:image:alt" content="Delicious meals from Urban Eats">
+  <meta property="twitter:site" content="@UrbanEats">
+  <meta property="twitter:creator" content="@UrbanEats">
 
-  <!-- Canonical -->
-  <link rel="canonical" href="https://urbaneatsresturent.vercel.app/" />
-
+  <!-- Structured Data (JSON-LD for SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "Urban Eats",
+    "image": "https://urbaneatsresturent.vercel.app/image.png",
+    "url": "https://urbaneatsresturent.vercel.app/",
+    "telephone": "+1234567890",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Main Street",
+      "addressLocality": "Jalpaiguri",
+      "postalCode": "12345",
+      "addressCountry": "IN"
+    },
+    "servesCuisine": ["Healthy", "Fast Food", "Fresh Meals"],
+    "priceRange": "$$",
+    "sameAs": [
+      "https://www.facebook.com/urbaneats",
+      "https://twitter.com/UrbanEats",
+      "https://www.instagram.com/urbaneats"
+    ]
+  }
+  </script>
 </head>
 
 <body>
