@@ -9,7 +9,7 @@ import {
 } from '../Utils/index.js';
 import fs from 'fs';
 
-// -------------------- TOKEN GENERATION --------------------
+// TOKEN GENERATION
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -42,8 +42,6 @@ const registerUser = asyncHandeler(async (req, res) => {
     );
   }
 
-  console.log(`Imcoming Cookies : ${req.cookies}`);
-
   // Create user
   const user = await User.create({
     userName,
@@ -55,6 +53,14 @@ const registerUser = asyncHandeler(async (req, res) => {
   const createdUser = await User.findById(user._id).select(
     '-password -refreshToken'
   );
+  const { accessToken } = await generateAccessAndRefreshTokens(user._id);
+
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  });
+
   if (!createdUser) {
     throw new APIERROR(502, 'Internal Server Error while creating the user');
   }

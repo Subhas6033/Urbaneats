@@ -1,5 +1,5 @@
-import {asyncHandeler, APIERROR, APIRESPONSE, sendEmail} from '../index.js'
-import {User} from '../../Models/user.models.js'
+import { asyncHandeler, APIERROR, APIRESPONSE, sendEmail } from '../index.js';
+import { User } from '../../Models/user.models.js';
 
 const sendOTPToUser = asyncHandeler(async (req, res) => {
   const { userName, email } = req.body;
@@ -31,7 +31,6 @@ Thank you,
 The Urban Eats Team`;
 
     await sendEmail(normalizedEmail, subject, message);
-    console.log(`Sent OTP ${generatedOTP} to ${normalizedEmail}`);
 
     // Save OTP in cookie (valid 5 minutes)
     res.cookie('OTP', generatedOTP, {

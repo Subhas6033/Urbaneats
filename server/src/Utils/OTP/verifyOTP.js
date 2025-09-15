@@ -1,4 +1,4 @@
-import {asyncHandeler, APIERROR, APIRESPONSE} from '../index.js'
+import { asyncHandeler, APIERROR, APIRESPONSE } from '../index.js';
 
 const verifyOTP = asyncHandeler(async (req, res) => {
   const { otp } = req.body;
@@ -7,8 +7,6 @@ const verifyOTP = asyncHandeler(async (req, res) => {
   if (!storedOTP) {
     throw new APIERROR(401, 'OTP expired');
   }
-
-  console.log(`Verifying OTP: sent=${otp}, stored=${storedOTP}`);
 
   if (otp !== storedOTP) {
     throw new APIERROR(401, 'Incorrect OTP');
