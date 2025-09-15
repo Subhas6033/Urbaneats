@@ -8,6 +8,7 @@ import {
   uploadOnCloudinary,
 } from '../Utils/index.js';
 import fs from 'fs';
+import { console } from 'inspector';
 
 // TOKEN GENERATION
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -148,33 +149,94 @@ const loginUser = asyncHandeler(async (req, res) => {
 
 //FORGOT PASSWORD
 const forgotPassword = asyncHandeler(async (req, res) => {
-  const { email } = req.cookies;
-  console.log(email);
-  if (!email) throw new APIERROR(401, 'Unauthorized');
+  const { email, newPassWord, confirmPassword } = req.body;
 
-  const { newPassWord, confirmPassword } = req.body;
-
+  // Validate required fields
   if (
-    [newPassWord, confirmPassword].some(
+    [email, newPassWord, confirmPassword].some(
       (field) => !field || field.trim() === ''
     )
   ) {
-    throw new APIERROR(401, 'All Fields Required');
+    throw new APIERROR(401, 'All fields are required');
   }
 
+  // Check if passwords match
   if (newPassWord !== confirmPassword) {
-    throw new APIERROR(401, 'New Password and Confirm Password must be same');
+    throw new APIERROR(
+      401,
+      'New Password and Confirm Password must be the same'
+    );
   }
 
+  // Find user
   const user = await User.findOne({ email });
-  if (!user) throw new APIERROR(404, 'User not found. Please Sign up first');
+  if (!user) throw new APIERROR(404, 'User not found. Please sign up first');
 
+  const generateCode = Math.floor(100000 + Math.random() * 900000);
+
+  let subject = '🔒 Password Reset Requested';
+  const message = `
+Hi ${user.userName},
+
+We received a request to reset your password. To proceed, please use the verification code below:
+
+🎯 Verification Code: ${generateCode}
+
+This code will expire in 10 minutes, so be sure to use it quickly!
+
+If you did not request a password reset, you can safely ignore this email. Your account remains secure.
+
+Happy dining! 🍴  
+The Urban Eats Team
+`;
+
+  try {
+    await sendEmail(email, subject, message);
+  } catch (error) {
+    console.error('Error Sending verification email :', error);
+  }
+
+  // Hash the new password
   const hashPassword = await bcrypt.hash(confirmPassword, 10);
-  await User.updateOne({ email }, { $set: { password: hashPassword } });
+  user.password = hashPassword;
+  await user.save();
 
+  // Prepare beautiful email
+  subject = '🔑 Password Reset Successful';
+  message = `
+Hi ${user.userName},
+
+Your password has been successfully updated! 🎉
+
+You can now log in using your new password and continue enjoying all the features of Urban Eats:
+
+🍽️ Explore delicious meals  
+⭐ Save your favorite dishes  
+🚚 Track your orders in real-time  
+
+If you did not request this change, please contact our support immediately.
+
+Happy dining!  
+The Urban Eats Team 🍴
+`;
+
+  // Send confirmation email
+  try {
+    await sendEmail(email, subject, message);
+  } catch (error) {
+    console.error('Error sending forgot password email:', error);
+  }
+
+  // Respond to client
   res
     .status(200)
-    .json(new APIRESPONSE(200, 'Successfully Set the new Password'));
+    .json(
+      new APIRESPONSE(
+        200,
+        null,
+        'Your password has been successfully updated. A confirmation email has been sent!'
+      )
+    );
 });
 
 // Change Password
@@ -202,6 +264,16 @@ const updatePassword = asyncHandeler(async (req, res) => {
 
   user.password = newPassword;
   await user.save();
+
+  try {
+    await sendEmail(
+      user.email,
+      'Password Change Notification',
+      'Your password has been changed successfully.'
+    );
+  } catch (error) {
+    console.log(`Error sending password change email: ${error.message}`);
+  }
 
   res.status(200).json({ message: 'Password updated successfully' });
 });

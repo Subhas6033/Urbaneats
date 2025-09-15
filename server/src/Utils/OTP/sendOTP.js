@@ -18,6 +18,8 @@ const sendOTPToUser = asyncHandeler(async (req, res) => {
   // Generate 6-digit OTP
   const generatedOTP = Math.floor(100000 + Math.random() * 900000);
 
+  console.log(`Generated OTP for ${normalizedEmail}: ${generatedOTP}`);
+
   try {
     const subject = `🔐 Verify Your Email - Urban Eats`;
     const message = `Hi ${userName},
