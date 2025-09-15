@@ -53,16 +53,14 @@ export const signup = createAsyncThunk(
         headers: { 'Content-Type': 'application/json' },
       });
 
-      console.log('Signup response:', res);
-
-      const user = res.data?.data; // ✅ backend sends user inside `data`
+      const user = res.data?.data;
       if (!user) {
         return rejectWithValue('fail');
       }
 
       return { status: 'success', user };
     } catch (err) {
-      console.error('Signup Error:', err.response?.data || err.message);
+      console.error('Signup Error:', err.response?.data.message || err.message);
 
       // Handle duplicate email
       if (
@@ -72,7 +70,7 @@ export const signup = createAsyncThunk(
         return rejectWithValue('duplicateEmail');
       }
 
-      return rejectWithValue('fail');
+      return rejectWithValue(err.response?.data?.message || 'Signup failed');
     }
   }
 );
@@ -94,6 +92,28 @@ export const login = createAsyncThunk(
     } catch (err) {
       console.error('Login Error:', err);
       return rejectWithValue('loginFail');
+    }
+  }
+);
+
+// Update Password
+export const updatePassword = createAsyncThunk(
+  'auth/updatePassword',
+  async (
+    { currentPassword, newPassword, confirmPassword },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/api/v1/user/update-password`,
+        { currentPassword, newPassword, confirmPassword },
+        { withCredentials: true }
+      );
+      return res.data; // returns APIRESPONSE
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || 'Failed to update password'
+      );
     }
   }
 );
@@ -168,6 +188,18 @@ const authSlice = createSlice({
         state.loading = false;
         state.status = action.payload; // 'loginFail'
         state.user = null;
+      })
+      // Update Password
+      .addCase(updatePassword.pending, (state) => {
+        state.passwordStatus = 'loading';
+        state.passwordError = null;
+      })
+      .addCase(updatePassword.fulfilled, (state) => {
+        state.passwordStatus = 'succeeded';
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.passwordStatus = 'failed';
+        state.passwordError = action.payload;
       });
   },
 });

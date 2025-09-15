@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Input, Button, Modal } from '../Components/index';
 import { Upload, Lock, LogOut } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -19,6 +18,13 @@ const Profile = () => {
   const [photoUploading, setPhotoUploading] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
   const [address, setAddress] = useState('');
+
+  // 🔔 Feedback modal state
+  const [feedbackModal, setFeedbackModal] = useState({
+    open: false,
+    title: '',
+    message: '',
+  });
 
   const { register, handleSubmit, reset } = useForm();
   const {
@@ -56,7 +62,7 @@ const Profile = () => {
         );
         setOrders(ordersRes.data.data || []);
       } catch (err) {
-        toast.error('Failed to fetch profile data');
+        console.log(err);
       } finally {
         setLoading(false);
       }
@@ -72,16 +78,12 @@ const Profile = () => {
         {},
         { withCredentials: true }
       );
-
-      // Clear local state
       setProfile(null);
       setOrders([]);
       setPhotoPreview(null);
-
-      toast.success('Logged out successfully!');
       navigate('/user/login');
     } catch (err) {
-      toast.error('Failed to log out from server. Clearing session locally.');
+      console.log(err);
       setProfile(null);
       setOrders([]);
       setPhotoPreview(null);
@@ -91,21 +93,45 @@ const Profile = () => {
 
   // Password update
   const onPasswordUpdate = async (data) => {
-    if (data.newPass !== data.confirmPass) {
-      toast.error('Passwords do not match');
+    if (data.newPassword !== data.confirmPassword) {
+      setFeedbackModal({
+        open: true,
+        title: 'Error',
+        message: 'New Password and Confirm Password must match.',
+      });
       return;
     }
+
     try {
-      await axios.post(
+      const response = await axios.post(
         `${API_URL}/api/v1/user/update-password`,
-        { current: data.current, newPass: data.newPass },
-        { withCredentials: true }
+        {
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+          confirmPassword: data.confirmPassword,
+        },
+        {
+          withCredentials: true,
+          headers: { 'Content-Type': 'application/json' },
+        }
       );
-      toast.success('Password updated!');
+
+      setFeedbackModal({
+        open: true,
+        title: 'Success',
+        message: response.data?.message || 'Password updated successfully!',
+      });
+
       reset();
       setPasswordModal(false);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update password');
+      setFeedbackModal({
+        open: true,
+        title: 'Error',
+        message:
+          err.response?.data?.message ||
+          'Failed to update password. Please try again.',
+      });
     }
   };
 
@@ -131,10 +157,9 @@ const Profile = () => {
         ...prev,
         profilePhoto: res.data.data.profilePhoto,
       }));
-      toast.success('Profile photo updated!');
       setPhotoPreview(null);
     } catch (err) {
-      toast.error('Failed to upload photo.');
+      console.log(err);
     } finally {
       setPhotoUploading(false);
     }
@@ -147,7 +172,6 @@ const Profile = () => {
       {/* PROFILE HEADER */}
       <section className="rounded-2xl shadow bg-white">
         <div className="p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
-          {/* Avatar & Upload */}
           <div className="flex flex-col items-center md:items-center w-full md:w-1/3">
             <img
               src={
@@ -185,7 +209,6 @@ const Profile = () => {
             </form>
           </div>
 
-          {/* Profile Details */}
           <div className="flex-1 w-full space-y-4 text-center md:text-left">
             <h1 className="text-3xl font-bold text-teal-700">
               {profile?.userName}
@@ -201,7 +224,6 @@ const Profile = () => {
               </p>
             </div>
 
-            {/* Address & Save */}
             <div className="flex flex-col md:flex-row md:items-end gap-3 pt-2">
               <div className="flex-1">
                 <label
@@ -227,7 +249,6 @@ const Profile = () => {
               </Button>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex flex-wrap justify-center md:justify-start gap-3 pt-4">
               <Button
                 onClick={() => setPasswordModal(true)}
@@ -245,8 +266,6 @@ const Profile = () => {
           </div>
         </div>
       </section>
-
-      {/* Loyalty + Recent Orders and Orders Table remain unchanged */}
 
       {/* Loyalty + Recent Orders */}
       <div className="grid md:grid-cols-2 gap-6">
@@ -332,17 +351,17 @@ const Profile = () => {
             <Input
               type="password"
               placeholder="Current Password"
-              {...register('current', { required: true })}
+              {...register('currentPassword', { required: true })}
             />
             <Input
               type="password"
               placeholder="New Password"
-              {...register('newPass', { required: true })}
+              {...register('newPassword', { required: true })}
             />
             <Input
               type="password"
               placeholder="Confirm Password"
-              {...register('confirmPass', { required: true })}
+              {...register('confirmPassword', { required: true })}
             />
             <Button
               type="submit"
@@ -351,6 +370,26 @@ const Profile = () => {
               Update Password
             </Button>
           </form>
+        </Modal>
+      )}
+
+      {/* 🔔 Feedback Modal */}
+      {feedbackModal.open && (
+        <Modal
+          title={feedbackModal.title}
+          onClose={() => setFeedbackModal((prev) => ({ ...prev, open: false }))}
+        >
+          <p className="text-gray-700">{feedbackModal.message}</p>
+          <div className="mt-4 flex justify-end">
+            <Button
+              onClick={() =>
+                setFeedbackModal((prev) => ({ ...prev, open: false }))
+              }
+              className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600"
+            >
+              Close
+            </Button>
+          </div>
         </Modal>
       )}
     </div>

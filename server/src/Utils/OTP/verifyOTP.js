@@ -8,6 +8,8 @@ const verifyOTP = asyncHandeler(async (req, res) => {
     throw new APIERROR(401, 'OTP expired');
   }
 
+  console.log(`Verifying OTP: sent=${otp}, stored=${storedOTP}`);
+
   if (otp !== storedOTP) {
     throw new APIERROR(401, 'Incorrect OTP');
   }

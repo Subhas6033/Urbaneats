@@ -31,6 +31,7 @@ Thank you,
 The Urban Eats Team`;
 
     await sendEmail(normalizedEmail, subject, message);
+    console.log(`Sent OTP ${generatedOTP} to ${normalizedEmail}`);
 
     // Save OTP in cookie (valid 5 minutes)
     res.cookie('OTP', generatedOTP, {

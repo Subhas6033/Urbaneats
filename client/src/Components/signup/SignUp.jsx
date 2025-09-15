@@ -84,7 +84,7 @@ export default function SignupPage() {
     }
   };
 
-  // Submit signup data (now sending plain JSON)
+  // Submit signup data
   const onSubmit = async (data) => {
     try {
       const { userName, email, mobileNumber, password } = data;

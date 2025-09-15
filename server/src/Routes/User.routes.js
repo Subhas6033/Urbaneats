@@ -6,9 +6,11 @@ import {
   getProfileByUserName,
   uploadProfilePhoto,
   logoutUser,
+  updatePassword,
 } from '../Controllers/User.controller.js';
-import {sendOTPToUser, verifyOTP} from '../Utils/index.js'
+import { sendOTPToUser, verifyOTP } from '../Utils/index.js';
 import { upload } from '../Middleware/Multer.middleware.js';
+import { verifyJWT } from '../Middleware/Auth.middleware.js';
 
 const router = Router();
 router.route('/signup').post(registerUser);
@@ -21,6 +23,7 @@ router
 router.route('/send-otp').post(sendOTPToUser);
 router.route('/verify-otp').post(verifyOTP);
 router.route('/forgot-password').post(forgotPassword);
+router.route('/update-password').post(verifyJWT, updatePassword);
 router.route('/logout').post(logoutUser);
 
 export default router;

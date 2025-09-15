@@ -42,6 +42,8 @@ const registerUser = asyncHandeler(async (req, res) => {
     );
   }
 
+  console.log(`Imcoming Cookies : ${req.cookies}`);
+
   // Create user
   const user = await User.create({
     userName,
@@ -140,10 +142,14 @@ const loginUser = asyncHandeler(async (req, res) => {
 
 //FORGOT PASSWORD
 const forgotPassword = asyncHandeler(async (req, res) => {
-  const { email, newPassWord, confirmPassword } = req.body;
+  const { email } = req.cookies;
+  console.log(email);
+  if (!email) throw new APIERROR(401, 'Unauthorized');
+
+  const { newPassWord, confirmPassword } = req.body;
 
   if (
-    [email, newPassWord, confirmPassword].some(
+    [newPassWord, confirmPassword].some(
       (field) => !field || field.trim() === ''
     )
   ) {
@@ -165,6 +171,35 @@ const forgotPassword = asyncHandeler(async (req, res) => {
     .json(new APIRESPONSE(200, 'Successfully Set the new Password'));
 });
 
+// Change Password
+const updatePassword = asyncHandeler(async (req, res) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  if (
+    [currentPassword, newPassword, confirmPassword].some(
+      (field) => !field || field.trim() === ''
+    )
+  ) {
+    throw new APIERROR(400, 'All fields are required');
+  }
+
+  if (newPassword !== confirmPassword) {
+    throw new APIERROR(400, 'New Password and Confirm Password must be same');
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) throw new APIERROR(404, 'User not found');
+
+  const isPasswordValid = await user.isPasswordCorrect(currentPassword);
+  if (!isPasswordValid) {
+    throw new APIERROR(401, 'Current Password is not correct');
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  res.status(200).json({ message: 'Password updated successfully' });
+});
+
 //  GET PROFILE BY USERNAME
 const getProfileByUserName = asyncHandeler(async (req, res) => {
   const { userName } = req.params;
@@ -174,7 +209,6 @@ const getProfileByUserName = asyncHandeler(async (req, res) => {
   }).select('-refreshToken -password');
 
   if (!user) throw new APIERROR(404, 'User Not Found!');
-  // user = URLSearchParams.toobject()
 
   // Ensure a profile photo exists, otherwise fallback to default
   if (!user.profilePhoto) {
@@ -221,26 +255,22 @@ const uploadProfilePhoto = asyncHandeler(async (req, res) => {
 
 // Logout User
 const logoutUser = asyncHandeler(async (req, res) => {
-  // 1. Get refresh token from cookies
   const refreshToken = req.cookies?.refreshToken;
 
   if (!refreshToken) {
     return res.status(204).json({ message: 'No refresh token found' });
   }
 
-  // 2. Find the user with this refresh token
   const user = await User.findOne({ refreshToken });
 
   if (user) {
-    // 3. Remove refresh token from DB
     user.refreshToken = '';
     await user.save();
   }
 
-  // 4. Clear refresh token cookie
   res.clearCookie('refreshToken', {
     httpOnly: true,
-    secure: true, // set to true if using https
+    secure: true,
     sameSite: 'none',
   });
 
@@ -257,4 +287,5 @@ export {
   getProfileByUserName,
   uploadProfilePhoto,
   logoutUser,
+  updatePassword,
 };
