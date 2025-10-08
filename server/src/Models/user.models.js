@@ -16,14 +16,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-<<<<<<< HEAD
     mobileNumber: {
       type: String,
       unique: true,
     },
-=======
-    mobileNumber: { type: String, unique: true },
->>>>>>> 92718d10603d85c724b5b1bff3d0afb0ebe0e688
     password: {
       type: String,
       required: [true, 'Password is Required'],
@@ -69,10 +65,7 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
-<<<<<<< HEAD
 // Generate Refresh Token
-=======
->>>>>>> 92718d10603d85c724b5b1bff3d0afb0ebe0e688
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
