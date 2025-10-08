@@ -22,7 +22,6 @@ const registerUser = asyncHandeler(async (req, res) => {
   console.log('Register Request Body:', req.body);
   const { userName, email, mobileNumber, password } = req.body;
 
-
   // Validate required fields
   if (
     [userName, email, password].some((field) => !field || field.trim() === '')

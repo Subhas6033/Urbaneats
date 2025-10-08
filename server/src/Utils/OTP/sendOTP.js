@@ -2,6 +2,7 @@ import { asyncHandeler } from '../AsyncHandeler.js';
 import { APIERROR } from '../APIERR.js';
 import { APIRESPONSE } from '../APIRES.js';
 import { sendEmail } from '../Email/sendEmail.js';
+import {User} from '../../Models/user.models.js';
 
 const sendOTPToUser = asyncHandeler(async (req, res) => {
   const { userName, email } = req.body;
@@ -10,6 +11,12 @@ const sendOTPToUser = asyncHandeler(async (req, res) => {
 
   if (!userName || !email) {
     throw new APIERROR(400, 'Username and email are required');
+  }
+
+  // Check if email is already registered
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new APIERROR(400, 'User with this email already exists');
   }
 
   // Generate 6-digit OTP
@@ -75,7 +82,7 @@ If you didn’t request this, please ignore this email.
 Thank you,
 The Urban Eats Team`;
 
-  // Send the email using your sendEmail utility
+  // Send the email
   const mailResponse = await sendEmail(
     email,
     subject,
