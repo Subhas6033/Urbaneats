@@ -1,8 +1,7 @@
 import { User } from '../Models/user.models.js';
 import { APIERROR } from '../Utils/APIERR.js';
-import { APIRESPONSE } from '../Utils/APIRES.js';
 import { asyncHandeler } from '../Utils/AsyncHandeler.js';
-import { uploadOnCloudinary } from '../Utils/Cloudinary/Cloudinary.js';
+import { sendEmail } from '../Utils/Email/sendEmail.js';
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -18,21 +17,26 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 // Register the Users
+
 const registerUser = asyncHandeler(async (req, res) => {
+  console.log('Register Request Body:', req.body);
   const { userName, email, mobileNumber, password } = req.body;
 
-  //  Validate required fields
-  if ([userName, email, password].some((field) => !field?.trim() === '')) {
+
+  // Validate required fields
+  if (
+    [userName, email, password].some((field) => !field || field.trim() === '')
+  ) {
     throw new APIERROR(401, 'All fields are required');
   }
 
-  //  Check duplicates
+  // Check duplicate email
   const existedUserWithEmail = await User.findOne({ email });
   if (existedUserWithEmail) {
     throw new APIERROR(400, 'User with this email already exists');
   }
 
-  //  Ensure OTP verified
+  // Ensure OTP verified
   if (!req.cookies?.isEmailVerified) {
     throw new APIERROR(
       401,
@@ -40,13 +44,12 @@ const registerUser = asyncHandeler(async (req, res) => {
     );
   }
 
-  //  Create user
+  // Create user
   const user = await User.create({
     userName,
     email,
     mobileNumber,
     password,
-    profilePhoto: photo.secure_url, // cloudinary url
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -56,7 +59,30 @@ const registerUser = asyncHandeler(async (req, res) => {
     throw new APIERROR(502, 'Internal Server Error while creating the user');
   }
 
-  //  Response matches frontend
+  // Send welcome email (async, but errors won’t block registration)
+  const subject = '🎉 Welcome to Urban Eats!';
+  const message = `Hi ${userName},
+
+Welcome to **Urban Eats**! 🍽️  
+We’re excited to have you join our community of food lovers.  
+
+Here’s what you can do right away:
+👉 Explore delicious meals from top restaurants  
+👉 Save your favorite dishes  
+👉 Track your orders in real-time  
+
+We’re here to make every bite memorable.  
+
+Bon appétit,  
+The Urban Eats Team 🍴`;
+
+  try {
+    await sendEmail(email, subject, message);
+  } catch (err) {
+    console.error('Failed to send welcome email:', err);
+  }
+
+  // Final response
   return res.status(200).json({
     status: 'success',
     user: createdUser,
@@ -64,59 +90,4 @@ const registerUser = asyncHandeler(async (req, res) => {
   });
 });
 
-const loginUser = asyncHandeler(async (req, res) => {
-  const { email, password } = req.body;
-  console.log('Registered user email and Password : ', email, password);
-  //   Validation for all fields are entered or not
-  if (![email, password].some((field) => field.trim() === '')) {
-    throw new APIERROR(401, 'All fields are Required');
-  }
-
-  //   Find the user from DB
-  const userDetails = await User.findOne({
-    $or: [{ userName }, { email }],
-  });
-
-  //   Check if the user exists or not
-  if (!userDetails) throw new APIERROR(400, 'User not found');
-  // Validate the user details
-  const isPasswordValid = await User.isPasswordCorrect(password);
-
-  // check if password is ok or not
-  if (!isPasswordValid) {
-    throw new APIERROR(401, 'Password is not Correct');
-  }
-
-  //   Generate access and refresh token and save in DB
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    userDetails._id
-  );
-
-  const loggedInUser = await User.findById(userDetails._id).select(
-    '-password -refreshToken'
-  );
-
-  //   Save the data in Cookies
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
-  return res
-    .status(200)
-    .cookie('accessToken', accessToken, options)
-    .cookie('refreshToken', refreshToken, options)
-    .json(
-      new APIRESPONSE(
-        200,
-        {
-          user: loggedInUser,
-          accessToken,
-          refreshToken,
-        },
-        'Successfully logged in'
-      )
-    );
-});
-
-export { generateAccessAndRefreshTokens, registerUser, loginUser };
+export { generateAccessAndRefreshTokens, registerUser };

@@ -7,7 +7,6 @@ const app = express();
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || `http://localhost:5173`,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
 );
@@ -21,6 +20,7 @@ app.use(
 );
 
 app.use(cookieParser());
+
 
 // Routing
 import userRoute from './src/Routes/User.routes.js';
