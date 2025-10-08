@@ -1,16 +1,16 @@
-import { asyncHandeler } from '../AsyncHandeler.js';
-import { APIERROR } from '../APIERR.js';
-import { APIRESPONSE } from '../APIRES.js';
+import { asyncHandeler, APIERROR, APIRESPONSE } from '../index.js';
 
 const verifyOTP = asyncHandeler(async (req, res) => {
   const { otp } = req.body;
-  const storedOTP = req.cookies?.OTP;
+  const storedOTP = req.cookies?.OTP || "NO OTP FOUND";
+
+  console.log(`Verifying OTP: received ${otp}, stored ${storedOTP}`);
 
   if (!storedOTP) {
     throw new APIERROR(401, 'OTP expired');
   }
 
-  if (otp !== storedOTP) {
+  if (Number(otp) !== Number(storedOTP)) {
     throw new APIERROR(401, 'Incorrect OTP');
   }
 

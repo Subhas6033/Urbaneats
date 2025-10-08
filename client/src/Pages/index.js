@@ -12,6 +12,7 @@ import Payment from './Payment';
 import CateringBookPage from './Catering/BookCatering';
 import Signup from './Signup';
 import Login from './Login';
+import Profile from './Profile';
 
 export {
   Home,
@@ -28,4 +29,5 @@ export {
   CateringBookPage,
   Signup,
   Login,
+  Profile,
 };

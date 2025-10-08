@@ -14,13 +14,19 @@ export const sendOtp = createAsyncThunk(
       });
       return 'otpSent';
     } catch (err) {
-      console.error(err);
+      if (err.response?.status === 400) {
+        const message = err.response.data?.message || '';
+        if (message.includes('email')) {
+          return rejectWithValue('duplicateEmail');
+        }
+      }
+      console.error('Send OTP error:', err);
       return rejectWithValue('otpFail');
     }
   }
 );
 
-// Verify OTP
+//  Verify OTP
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
   async (formData, { rejectWithValue }) => {
@@ -31,35 +37,83 @@ export const verifyOtp = createAsyncThunk(
       });
       return 'otpVerified';
     } catch (err) {
-      console.error(err);
+      console.error('Verify OTP error:', err);
       return rejectWithValue('otpInvalid');
     }
   }
 );
 
-// Final Signup
+//  Signup
 export const signup = createAsyncThunk(
   'auth/signup',
-  async (formData, { rejectWithValue }) => {
+  async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/api/v1/user/signup`, formData, {
+      const res = await axios.post(`${API_URL}/api/v1/user/signup`, userData, {
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' },
       });
 
-      if (res.data?.user) {
-        return { status: 'success', user: res.data.user };
+      const user = res.data?.data;
+      if (!user) {
+        return rejectWithValue('fail');
       }
-      return rejectWithValue('fail');
+
+      return { status: 'success', user };
     } catch (err) {
-      console.log(err);
-      if (err.response?.status === 400) {
-        const message = err.response.data.message || '';
-        if (message.includes('email')) return rejectWithValue('duplicateEmail');
-        if (message.includes('mobile'))
-          return rejectWithValue('duplicateMobile');
+      console.error('Signup Error:', err.response?.data.message || err.message);
+
+      // Handle duplicate email
+      if (
+        err.response?.data?.message &&
+        err.response.data.message.includes('duplicate key')
+      ) {
+        return rejectWithValue('duplicateEmail');
       }
-      return rejectWithValue('fail');
+
+      return rejectWithValue(err.response?.data?.message || 'Signup failed');
+    }
+  }
+);
+
+//  Login
+export const login = createAsyncThunk(
+  'auth/login',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(`${API_URL}/api/v1/user/login`, formData, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const user = res.data?.data?.user || res.data?.data;
+      if (!user) return rejectWithValue('loginFail');
+
+      return { status: 'loggedIn', user };
+    } catch (err) {
+      console.error('Login Error:', err);
+      return rejectWithValue('loginFail');
+    }
+  }
+);
+
+// Update Password
+export const updatePassword = createAsyncThunk(
+  'auth/updatePassword',
+  async (
+    { currentPassword, newPassword, confirmPassword },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/api/v1/user/update-password`,
+        { currentPassword, newPassword, confirmPassword },
+        { withCredentials: true }
+      );
+      return res.data; // returns APIRESPONSE
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || 'Failed to update password'
+      );
     }
   }
 );
@@ -78,47 +132,74 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.status = null;
+      state.loading = false;
     },
   },
   extraReducers: (builder) => {
     builder
-      // sendOtp
+      //  Send OTP
       .addCase(sendOtp.pending, (state) => {
         state.loading = true;
       })
       .addCase(sendOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'otpSent'
       })
       .addCase(sendOtp.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'duplicateEmail' or 'otpFail'
       })
-      // verifyOtp
+      //  Verify OTP
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'otpVerified'
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'otpInvalid'
       })
-      // signup
+      //  Signup
       .addCase(signup.pending, (state) => {
         state.loading = true;
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload.status;
+        state.status = action.payload.status; // 'success'
         state.user = action.payload.user;
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload;
+        state.status = action.payload; // 'fail' or 'duplicateEmail'
         state.user = null;
+      })
+      //  Login
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.status = action.payload.status; // 'loggedIn'
+        state.user = action.payload.user;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.status = action.payload; // 'loginFail'
+        state.user = null;
+      })
+      // Update Password
+      .addCase(updatePassword.pending, (state) => {
+        state.passwordStatus = 'loading';
+        state.passwordError = null;
+      })
+      .addCase(updatePassword.fulfilled, (state) => {
+        state.passwordStatus = 'succeeded';
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.passwordStatus = 'failed';
+        state.passwordError = action.payload;
       });
   },
 });

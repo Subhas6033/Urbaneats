@@ -1,8 +1,10 @@
+import bcrypt from 'bcrypt';
 import { User } from '../Models/user.models.js';
 import { APIERROR } from '../Utils/APIERR.js';
 import { asyncHandeler } from '../Utils/AsyncHandeler.js';
 import { sendEmail } from '../Utils/Email/sendEmail.js';
 
+// TOKEN GENERATION
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -54,6 +56,14 @@ const registerUser = asyncHandeler(async (req, res) => {
   const createdUser = await User.findById(user._id).select(
     '-password -refreshToken'
   );
+  const { accessToken } = await generateAccessAndRefreshTokens(user._id);
+
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  });
+
   if (!createdUser) {
     throw new APIERROR(502, 'Internal Server Error while creating the user');
   }

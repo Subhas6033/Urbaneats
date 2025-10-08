@@ -1,114 +1,133 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
-import { Input } from '../index';
+import { Input, Button } from '../index';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, resetStatus } from '../../Slice/AuthSlice';
+import { useForm } from 'react-hook-form';
 
-//Card Component
 const Card = ({ children, className = '' }) => (
   <div
-    className={`bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200 ${className}`}
+    className={`bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-orange-100 ${className}`}
   >
     {children}
   </div>
 );
 
 const CardContent = ({ children, className = '' }) => (
-  <div className={`p-8 ${className}`}>{children}</div>
-);
-
-// Button Component
-const Button = ({ children, className = '', ...props }) => (
-  <button
-    className={`w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
+  <div className={`p-10 ${className}`}>{children}</div>
 );
 
 export default function LoginComp() {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { status, loading, user } = useSelector((state) => state.auth);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({ defaultValues: { email: '', password: '' } });
+
+  const onSubmit = async (data) => {
+    dispatch(login(data));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Basic validation
-    const newErrors = {};
-    if (!form.email) newErrors.email = 'Email is required';
-    if (!form.password) newErrors.password = 'Password is required';
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Login submitted:', form);
-      // TODO: Connect to backend API for login
+  useEffect(() => {
+    if (status === 'loggedIn' && user) {
+      navigate('/menu');
+      dispatch(resetStatus());
     }
-  };
+  }, [status, user, navigate, dispatch]);
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-orange-200 to-yellow-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-orange-100 to-orange-200 p-6">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
         className="w-full max-w-md"
       >
         <Card>
           <CardContent>
-            {/* Brand */}
-            <h1 className="text-3xl font-bold text-center text-orange-600 mb-2">
-              Urban Eats
-            </h1>
-            <p className="text-center text-gray-500 mb-6">
-              Welcome back! Please log in.
-            </p>
+            <div className="flex flex-col items-center mb-8">
+              <h1 className="text-4xl font-extrabold text-orange-600 drop-shadow-sm">
+                Urban Eats
+              </h1>
+              <p className="text-gray-500 mt-2 text-center">
+                Welcome back! Log in to continue.
+              </p>
+            </div>
 
-            {/* Form */}
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <Input
                 id="email"
-                name="email"
-                type="email"
                 label="Email"
+                type="email"
                 placeholder="you@example.com"
                 icon={Mail}
-                value={form.email}
-                onChange={handleChange}
-                error={errors.email}
+                error={errors.email?.message}
+                {...register('email', {
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Enter a valid email',
+                  },
+                })}
               />
-
               <Input
                 id="password"
-                name="password"
-                type="password"
                 label="Password"
+                type="password"
                 placeholder="••••••••"
                 icon={Lock}
-                value={form.password}
-                onChange={handleChange}
-                error={errors.password}
+                error={errors.password?.message}
+                {...register('password', {
+                  required: 'Password is required',
+                  minLength: {
+                    // value: 6,
+                    message: 'Password must be at least 6 characters',
+                  },
+                })}
               />
 
-              <Button type="submit">Log In</Button>
+              {status === 'loginFail' && (
+                <p className="text-red-500 text-sm text-center font-medium">
+                  Invalid email or password.
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="md"
+                disabled={loading || isSubmitting}
+                className="w-full mt-2"
+              >
+                {loading ? 'Logging in...' : 'Log In'}
+              </Button>
             </form>
 
-            {/* Redirect to Signup */}
-            <p className="text-sm text-center text-gray-500 mt-6">
-              Don’t have an account?{' '}
+            <div className="flex flex-col items-center mt-8 space-y-3 text-sm">
               <Link
-                to="/user/signup"
-                className="text-orange-600 hover:underline font-medium"
+                to="/forgot-password"
+                className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
               >
-                Sign up
+                Forgot your password?
               </Link>
-            </p>
+              <p className="text-gray-500">
+                Don’t have an account?{' '}
+                <Link
+                  to="/user/signup"
+                  className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
