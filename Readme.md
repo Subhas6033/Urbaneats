@@ -48,6 +48,3 @@ yarn dev
 
 # 5) Build for production
 npm run build
-
-# 6) Preview production build (optional)
-npm run preview
