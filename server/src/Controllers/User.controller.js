@@ -1,8 +1,5 @@
-import bcrypt from 'bcrypt';
 import { User } from '../Models/user.models.js';
-import { APIERROR } from '../Utils/APIERR.js';
-import { asyncHandeler } from '../Utils/AsyncHandeler.js';
-import { sendEmail } from '../Utils/Email/sendEmail.js';
+import { APIERROR, asyncHandeler, sendEmail } from '../Utils/index.js';
 
 // TOKEN GENERATION
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -69,26 +66,20 @@ const registerUser = asyncHandeler(async (req, res) => {
   }
 
   // Send welcome email (async, but errors won’t block registration)
-  const subject = '🎉 Welcome to Urban Eats!';
-  const message = `Hi ${userName},
-
-Welcome to **Urban Eats**! 🍽️  
-We’re excited to have you join our community of food lovers.  
-
-Here’s what you can do right away:
-👉 Explore delicious meals from top restaurants  
-👉 Save your favorite dishes  
-👉 Track your orders in real-time  
-
-We’re here to make every bite memorable.  
-
-Bon appétit,  
-The Urban Eats Team 🍴`;
+  const templateId = process.env.EMAILJS_WELCOME_TEMPLATE_ID;
+  const templateData = {
+    userName,
+    email,
+    appLink: `https://urbaneatsresturent.vercel.app/`,
+    supportlink: `https://urbaneatsresturent.vercel.app//support`,
+    currentYear: new Date().getFullYear(),
+  };
 
   try {
-    await sendEmail(email, subject, message);
-  } catch (err) {
-    console.error('Failed to send welcome email:', err);
+    const welcomeMailResponse = await sendEmail(templateId, templateData);
+    console.log('Successfully Sent the Welcome mail', welcomeMailResponse);
+  } catch (error) {
+    console.error(`Err! While Sending the welcome mail`, error);
   }
 
   // Final response
