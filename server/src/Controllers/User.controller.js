@@ -1,5 +1,10 @@
 import { User } from '../Models/user.models.js';
-import { APIERROR, asyncHandeler, sendEmail } from '../Utils/index.js';
+import {
+  APIERROR,
+  APIRESPONSE,
+  asyncHandeler,
+  sendEmail,
+} from '../Utils/index.js';
 
 // TOKEN GENERATION
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -90,4 +95,34 @@ const registerUser = asyncHandeler(async (req, res) => {
   });
 });
 
-export { generateAccessAndRefreshTokens, registerUser };
+// Login the user
+const loginUser = asyncHandeler(async (req, res) => {
+  const { email, password } = req.body;
+  console.log('Coming from the Body', email, password);
+
+  // Check if all the fields filled or not
+  if (!email || !password) {
+    throw new APIERROR(400, 'All the fields required');
+  }
+
+  // Check that the user is exist with that email or not
+  const existedUserWithEmail = await User.findOne({ email });
+
+  // If no user exist
+  if (!existedUserWithEmail) {
+    throw new APIERROR(
+      402,
+      'User with this email not exists. Please Sign Up before login'
+    );
+  }
+
+  // If user exist with that mail
+  const passWordCheck = await existedUserWithEmail.isPasswordCorrect(password);
+  if (!passWordCheck) {
+    throw new APIERROR(400, 'Password is not correct');
+  }
+
+  res.status(200).json(new APIRESPONSE(200, 'Successfullly logged in'));
+});
+
+export { generateAccessAndRefreshTokens, registerUser, loginUser };

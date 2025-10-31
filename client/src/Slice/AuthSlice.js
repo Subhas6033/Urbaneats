@@ -92,6 +92,7 @@ export const login = createAsyncThunk(
       });
 
       const user = res.data?.user || res.data?.data;
+      console.log(user)
       if (!user) return rejectWithValue('loginFail');
 
       return { status: 'loggedIn', user };
