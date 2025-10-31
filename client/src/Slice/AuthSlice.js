@@ -53,16 +53,22 @@ export const signup = createAsyncThunk(
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const user = res.data?.data;
+      // Get user from backend response
+      const user = res.data?.user;
+      console.log(user);
+
       if (!user) {
+        console.warn('Signup response missing user:', res.data);
         return rejectWithValue('fail');
       }
 
-      return { status: 'success', user };
+      return { status: res.data?.status || 'success', user };
     } catch (err) {
-      console.error('Signup Error:', err.response?.data.message || err.message);
+      console.error(
+        'Signup Error:',
+        err.response?.data?.message || err.message
+      );
 
-      // Handle duplicate email
       if (
         err.response?.data?.message &&
         err.response.data.message.includes('duplicate key')
@@ -85,7 +91,7 @@ export const login = createAsyncThunk(
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const user = res.data?.data?.user || res.data?.data;
+      const user = res.data?.user || res.data?.data;
       if (!user) return rejectWithValue('loginFail');
 
       return { status: 'loggedIn', user };
