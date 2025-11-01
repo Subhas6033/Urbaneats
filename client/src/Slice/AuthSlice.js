@@ -92,7 +92,7 @@ export const login = createAsyncThunk(
       });
 
       const user = res.data?.user || res.data?.data;
-      console.log(user)
+      console.log(user);
       if (!user) return rejectWithValue('loginFail');
 
       return { status: 'loggedIn', user };
@@ -121,6 +121,25 @@ export const updatePassword = createAsyncThunk(
       return rejectWithValue(
         err.response?.data?.message || 'Failed to update password'
       );
+    }
+  }
+);
+
+// Get user details
+export const getUser = createAsyncThunk(
+  'auth/getUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(`${API_URL}/api/v1/user/get-user`, {
+        withCredentials: true,
+      });
+
+      const user = res.data?.user || res.data?.data;
+      if (!user) return rejectWithValue('userNotFound');
+      return { status: 'fetched', user };
+    } catch (err) {
+      console.error('Get User Error:', err);
+      return rejectWithValue('fetchFail');
     }
   }
 );
@@ -207,6 +226,20 @@ const authSlice = createSlice({
       .addCase(updatePassword.rejected, (state, action) => {
         state.passwordStatus = 'failed';
         state.passwordError = action.payload;
+      })
+      // Get user
+      .addCase(getUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.status = action.payload.status;
+        state.user = action.payload.user;
+      })
+      .addCase(getUser.rejected, (state, action) => {
+        state.loading = false;
+        state.status = action.payload;
+        state.user = null;
       });
   },
 });

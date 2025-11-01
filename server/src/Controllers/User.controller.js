@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 import { User } from '../Models/user.models.js';
 import {
   APIERROR,
@@ -98,7 +100,6 @@ const registerUser = asyncHandeler(async (req, res) => {
 // Login the user
 const loginUser = asyncHandeler(async (req, res) => {
   const { email, password } = req.body;
-  console.log('Coming from the Body', email, password);
 
   // Check if all the fields filled or not
   if (!email || !password) {
@@ -122,7 +123,67 @@ const loginUser = asyncHandeler(async (req, res) => {
     throw new APIERROR(400, 'Password is not correct');
   }
 
+  // Generate the access and refresh TOken
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    existedUserWithEmail?._id
+  );
+
+  // Set token in cookies
+  try {
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+    });
+
+  } catch (error) {
+    console.log("Can't set the cookies", error);
+  }
+
   res.status(200).json(new APIRESPONSE(200, 'Successfullly logged in'));
 });
 
-export { generateAccessAndRefreshTokens, registerUser, loginUser };
+// Get user details
+const getUserDetails = asyncHandeler(async (req, res) => {
+  const token = req.cookies?.accessToken;
+  if (!token) {
+    throw new APIERROR(401, 'Unauthorized access please login first');
+  }
+
+  // Veriy the token
+  let decode;
+  try {
+    decode = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  } catch (error) {
+    console.log('Invalid token. Please login again');
+  }
+
+  // Find the user
+
+  const userDetails = await User.findById(decode?._id).select(
+    '-password -refreshToken'
+  );
+
+  if (!userDetails) {
+    throw new APIERROR(404, 'User Not found');
+  }
+
+  return res
+    .status(200)
+    .json(new APIRESPONSE(200, userDetails, 'Successfully fetched the User'));
+});
+
+export {
+  generateAccessAndRefreshTokens,
+  registerUser,
+  loginUser,
+  getUserDetails,
+};
