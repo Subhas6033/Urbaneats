@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-//  Send OTP
+// ========== SEND OTP ==========
 export const sendOtp = createAsyncThunk(
   'auth/sendOtp',
   async (formData, { rejectWithValue }) => {
@@ -26,7 +26,7 @@ export const sendOtp = createAsyncThunk(
   }
 );
 
-//  Verify OTP
+// ========== VERIFY OTP ==========
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
   async (formData, { rejectWithValue }) => {
@@ -43,7 +43,7 @@ export const verifyOtp = createAsyncThunk(
   }
 );
 
-//  Signup
+// ========== SIGNUP ==========
 export const signup = createAsyncThunk(
   'auth/signup',
   async (userData, { rejectWithValue }) => {
@@ -53,14 +53,8 @@ export const signup = createAsyncThunk(
         headers: { 'Content-Type': 'application/json' },
       });
 
-      // Get user from backend response
       const user = res.data?.user;
-      console.log(user);
-
-      if (!user) {
-        console.warn('Signup response missing user:', res.data);
-        return rejectWithValue('fail');
-      }
+      if (!user) return rejectWithValue('fail');
 
       return { status: res.data?.status || 'success', user };
     } catch (err) {
@@ -81,7 +75,7 @@ export const signup = createAsyncThunk(
   }
 );
 
-//  Login
+// ========== LOGIN ==========
 export const login = createAsyncThunk(
   'auth/login',
   async (formData, { rejectWithValue }) => {
@@ -92,7 +86,6 @@ export const login = createAsyncThunk(
       });
 
       const user = res.data?.user || res.data?.data;
-      console.log(user);
       if (!user) return rejectWithValue('loginFail');
 
       return { status: 'loggedIn', user };
@@ -103,7 +96,7 @@ export const login = createAsyncThunk(
   }
 );
 
-// Update Password
+// ========== UPDATE PASSWORD ==========
 export const updatePassword = createAsyncThunk(
   'auth/updatePassword',
   async (
@@ -116,7 +109,7 @@ export const updatePassword = createAsyncThunk(
         { currentPassword, newPassword, confirmPassword },
         { withCredentials: true }
       );
-      return res.data; // returns APIRESPONSE
+      return res.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || 'Failed to update password'
@@ -125,7 +118,7 @@ export const updatePassword = createAsyncThunk(
   }
 );
 
-// Get user details
+// ========== GET USER ==========
 export const getUser = createAsyncThunk(
   'auth/getUser',
   async (_, { rejectWithValue }) => {
@@ -136,6 +129,7 @@ export const getUser = createAsyncThunk(
 
       const user = res.data?.user || res.data?.data;
       if (!user) return rejectWithValue('userNotFound');
+
       return { status: 'fetched', user };
     } catch (err) {
       console.error('Get User Error:', err);
@@ -144,12 +138,15 @@ export const getUser = createAsyncThunk(
   }
 );
 
+// ========== SLICE ==========
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     status: null,
     user: null,
     loading: false,
+    passwordStatus: null,
+    passwordError: null,
   },
   reducers: {
     resetStatus: (state) => {
@@ -163,59 +160,63 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //  Send OTP
+      // ===== SEND OTP =====
       .addCase(sendOtp.pending, (state) => {
         state.loading = true;
       })
       .addCase(sendOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload; // 'otpSent'
+        state.status = action.payload;
       })
       .addCase(sendOtp.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload; // 'duplicateEmail' or 'otpFail'
+        state.status = action.payload;
       })
-      //  Verify OTP
+
+      // ===== VERIFY OTP =====
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload; // 'otpVerified'
+        state.status = action.payload;
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload; // 'otpInvalid'
+        state.status = action.payload;
       })
-      //  Signup
+
+      // ===== SIGNUP =====
       .addCase(signup.pending, (state) => {
         state.loading = true;
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload.status; // 'success'
+        state.status = action.payload.status;
         state.user = action.payload.user;
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload; // 'fail' or 'duplicateEmail'
+        state.status = action.payload;
         state.user = null;
       })
-      //  Login
+
+      // ===== LOGIN =====
       .addCase(login.pending, (state) => {
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.status = action.payload.status; // 'loggedIn'
+        state.status = action.payload.status;
         state.user = action.payload.user;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.status = action.payload; // 'loginFail'
+        state.status = action.payload;
         state.user = null;
       })
-      // Update Password
+
+      // ===== UPDATE PASSWORD =====
       .addCase(updatePassword.pending, (state) => {
         state.passwordStatus = 'loading';
         state.passwordError = null;
@@ -227,7 +228,8 @@ const authSlice = createSlice({
         state.passwordStatus = 'failed';
         state.passwordError = action.payload;
       })
-      // Get user
+
+      // ===== GET USER =====
       .addCase(getUser.pending, (state) => {
         state.loading = true;
       })
