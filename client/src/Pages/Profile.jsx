@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, loading } = useSelector((state) => state.auth);
+  const { userName: paramUserName } = useParams();
 
   const [orders, setOrders] = useState([]);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -40,6 +41,22 @@ const Profile = () => {
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
+
+  useEffect(() => {
+    // Only run when user is loaded and we're not already on a username path
+    if (!loading && user?.userName) {
+      if (!paramUserName || paramUserName === 'undefined') {
+        console.log('This is the param user', paramUserName);
+        const encodedName = encodeURIComponent(user.userName.trim());
+        navigate(`/user/profile/${encodedName}`, { replace: true });
+        console.log(`✅ Redirected to /user/profile/${encodedName}`);
+      } else {
+        console.log(`🟢 Already on correct route: ${paramUserName}`);
+      }
+    } else {
+      console.log('⏳ Waiting for user details or still loading...');
+    }
+  }, [user, paramUserName, navigate, loading]);
 
   // ✅ Pre-fill address
   useEffect(() => {

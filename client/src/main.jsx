@@ -91,8 +91,8 @@ const router = createBrowserRouter([
       },
       {
         path: '/user/profile/:userName',
-        element : <Profile />
-      }
+        element: <Profile />,
+      },
     ],
   },
 ]);
