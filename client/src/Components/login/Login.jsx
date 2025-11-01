@@ -5,10 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
 import { Input, Button } from '../index';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, resetStatus } from '../../Slice/AuthSlice';
+import { login, resetAuthState, getUser } from '../../Slice/AuthSlice';
 import { useForm } from 'react-hook-form';
 
-//  Custom Toast Component
+// 🔔 Toast Component
 function Toast({ message, type, onClose, showClose = false }) {
   if (!message) return null;
 
@@ -40,7 +40,7 @@ function Toast({ message, type, onClose, showClose = false }) {
   );
 }
 
-// Card Components
+// 💳 Card Components
 const Card = ({ children, className = '' }) => (
   <div
     className={`bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-orange-100 ${className}`}
@@ -53,11 +53,18 @@ const CardContent = ({ children, className = '' }) => (
   <div className={`p-10 ${className}`}>{children}</div>
 );
 
-// Main login
+// 🚀 Main Login Component
 export default function LoginComp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status, loading, user } = useSelector((state) => state.auth);
+
+  // 🧩 Extract modular login state
+  const {
+    login: { status: loginStatus, loading: loginLoading, error: loginError },
+    getUser: { status: userStatus, error: userError },
+    user,
+  } = useSelector((state) => state.auth);
+
   const [toast, setToast] = useState({ message: '', type: '' });
 
   const {
@@ -66,43 +73,69 @@ export default function LoginComp() {
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: { email: '', password: '' } });
 
+  // 🔐 Handle Login Submit
   const onSubmit = async (data) => {
     dispatch(login(data));
+    console.log('Succesfully logged in', data);
   };
 
+  // 🎯 Handle login + redirect + toast
   useEffect(() => {
-    if (status === 'loggedIn' && user) {
+    if (loginStatus === 'success') {
       setToast({ message: 'Successfully logged in 🎉', type: 'success' });
-      setTimeout(() => {
-        navigate('/menu');
-        dispatch(resetStatus());
-        setToast({ message: '', type: '' });
-      }, 2000);
+
+      // ✅ Wait for user to be fetched from backend
+      dispatch(getUser())
+        .unwrap()
+        .then((fetchedUser) => {
+          console.log('✅ User fetched:', fetchedUser);
+
+          // Delay navigation slightly so toast can show
+          setTimeout(() => {
+            const encodedName = encodeURIComponent(fetchedUser?.userName || '');
+            if (encodedName) {
+              navigate(`/menu`);
+            } else {
+              navigate('/user/signup');
+            }
+
+            // ✅ Reset the login slice and clear toast
+            dispatch(resetAuthState('login'));
+            setToast({ message: '', type: '' });
+          }, 1500);
+        })
+        .catch((err) => {
+          console.error('❌ Failed to fetch user after login:', err);
+          setToast({
+            message: 'Could not load user data. Try refreshing.',
+            type: 'error',
+          });
+        });
     }
 
-    if (status === 'loginFail') {
+    if (loginError === 'loginFail') {
       setToast({ message: 'Invalid email or password ❌', type: 'error' });
       setTimeout(() => {
-        dispatch(resetStatus());
+        dispatch(resetAuthState('login'));
         setToast({ message: '', type: '' });
       }, 2500);
     }
 
-    if (status === 'error') {
+    if (loginError && loginError !== 'loginFail') {
       setToast({
         message: 'Something went wrong. Please try again later.',
         type: 'error',
       });
       setTimeout(() => {
-        dispatch(resetStatus());
+        dispatch(resetAuthState('login'));
         setToast({ message: '', type: '' });
       }, 2500);
     }
-  }, [status, user, navigate, dispatch]);
+  }, [loginStatus, loginError, dispatch, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-orange-100 to-orange-200 p-6">
-      {/* Custom Toast */}
+      {/* Toast */}
       <Toast
         message={toast.message}
         type={toast.type}
@@ -158,10 +191,10 @@ export default function LoginComp() {
                 type="submit"
                 variant="primary"
                 size="md"
-                disabled={loading || isSubmitting}
+                disabled={loginLoading || isSubmitting}
                 className="w-full mt-2"
               >
-                {loading ? 'Logging in...' : 'Log In'}
+                {loginLoading ? 'Logging in...' : 'Log In'}
               </Button>
             </form>
 

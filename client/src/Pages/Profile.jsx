@@ -13,7 +13,13 @@ const API_URL = import.meta.env.VITE_BACKEND_URL;
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, loading } = useSelector((state) => state.auth);
+
+  //  Modular Redux extraction
+  const {
+    user,
+    getUser: { loading: userLoading, status: userStatus, error: userError },
+  } = useSelector((state) => state.auth);
+
   const { userName: paramUserName } = useParams();
 
   const [orders, setOrders] = useState([]);
@@ -37,28 +43,27 @@ const Profile = () => {
 
   const selectedPhoto = watchPhoto('profilePhoto');
 
-  // Load user
+  //  Load user once on mount
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
 
-  // Set user profile url
+  //  Redirect to correct username route if missing or undefined
   useEffect(() => {
-    // Only run when user is loaded and we're not already on a username path
-    if (!loading && user?.userName) {
+    if (!userLoading && user?.userName) {
       if (!paramUserName || paramUserName === 'undefined') {
         const encodedName = encodeURIComponent(user.userName.trim());
         navigate(`/user/profile/${encodedName}`, { replace: true });
       }
     }
-  }, [user, paramUserName, navigate, loading]);
+  }, [user, paramUserName, navigate, userLoading]);
 
-  // Pre-fill address
+  //  Pre-fill address once user is loaded
   useEffect(() => {
     if (user?.address) setAddress(user.address);
   }, [user]);
 
-  // Fetch orders
+  //  Fetch orders when user is available
   useEffect(() => {
     const fetchOrders = async () => {
       if (!user?.userName) return;
@@ -75,7 +80,7 @@ const Profile = () => {
     fetchOrders();
   }, [user]);
 
-  // Image preview
+  //  Image preview logic
   useEffect(() => {
     if (selectedPhoto && selectedPhoto[0]) {
       const file = selectedPhoto[0];
@@ -85,7 +90,7 @@ const Profile = () => {
     }
   }, [selectedPhoto]);
 
-  // Save address
+  //  Save address handler
   const handleSaveAddress = async () => {
     if (!address.trim()) {
       setFeedbackModal({
@@ -122,7 +127,7 @@ const Profile = () => {
     }
   };
 
-  // Logout
+  //  Logout handler
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -138,7 +143,7 @@ const Profile = () => {
     }
   };
 
-  // Update password
+  //  Password update
   const onPasswordUpdate = async (data) => {
     if (data.newPassword !== data.confirmPassword) {
       return setFeedbackModal({
@@ -176,7 +181,7 @@ const Profile = () => {
     }
   };
 
-  // Upload photo
+  //  Photo upload
   const onPhotoUpload = async (data) => {
     const file = data.profilePhoto?.[0];
     if (!file) return;
@@ -205,11 +210,19 @@ const Profile = () => {
     }
   };
 
-  if (loading)
+  //  Handle loading and errors
+  if (userLoading)
     return (
       <p className="text-center mt-10 text-gray-500 animate-pulse">
         Loading profile...
       </p>
+    );
+
+  if (userError)
+    return (
+      <div className="text-center mt-10 text-red-500">
+        <p>Error: {userError}</p>
+      </div>
     );
 
   if (!user)

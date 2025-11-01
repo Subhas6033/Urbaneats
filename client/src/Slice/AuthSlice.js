@@ -14,13 +14,8 @@ export const sendOtp = createAsyncThunk(
       });
       return 'otpSent';
     } catch (err) {
-      if (err.response?.status === 400) {
-        const message = err.response.data?.message || '';
-        if (message.includes('email')) {
-          return rejectWithValue('duplicateEmail');
-        }
-      }
-      console.error('Send OTP error:', err);
+      const message = err.response?.data?.message;
+      if (message?.includes('email')) return rejectWithValue('duplicateEmail');
       return rejectWithValue('otpFail');
     }
   }
@@ -37,7 +32,7 @@ export const verifyOtp = createAsyncThunk(
       });
       return 'otpVerified';
     } catch (err) {
-      console.error('Verify OTP error:', err);
+      console.log("OTP Verification ERR", err)
       return rejectWithValue('otpInvalid');
     }
   }
@@ -52,25 +47,12 @@ export const signup = createAsyncThunk(
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' },
       });
-
-      const user = res.data?.user;
-      if (!user) return rejectWithValue('fail');
-
-      return { status: res.data?.status || 'success', user };
+      return res.data?.data || res.data?.user || null;
     } catch (err) {
-      console.error(
-        'Signup Error:',
-        err.response?.data?.message || err.message
-      );
-
-      if (
-        err.response?.data?.message &&
-        err.response.data.message.includes('duplicate key')
-      ) {
+      const message = err.response?.data?.message;
+      if (message?.includes('duplicate key'))
         return rejectWithValue('duplicateEmail');
-      }
-
-      return rejectWithValue(err.response?.data?.message || 'Signup failed');
+      return rejectWithValue(message || 'Signup failed');
     }
   }
 );
@@ -80,40 +62,14 @@ export const login = createAsyncThunk(
   'auth/login',
   async (formData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/api/v1/user/login`, formData, {
+      await axios.post(`${API_URL}/api/v1/user/login`, formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' },
       });
-
-      const user = res.data?.user || res.data?.data;
-      if (!user) return rejectWithValue('loginFail');
-
-      return { status: 'loggedIn', user };
+      return 'loginSuccess';
     } catch (err) {
-      console.error('Login Error:', err);
+      console.log("Login ERR", err)
       return rejectWithValue('loginFail');
-    }
-  }
-);
-
-// ========== UPDATE PASSWORD ==========
-export const updatePassword = createAsyncThunk(
-  'auth/updatePassword',
-  async (
-    { currentPassword, newPassword, confirmPassword },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await axios.post(
-        `${API_URL}/api/v1/user/update-password`,
-        { currentPassword, newPassword, confirmPassword },
-        { withCredentials: true }
-      );
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(
-        err.response?.data?.message || 'Failed to update password'
-      );
     }
   }
 );
@@ -127,13 +83,37 @@ export const getUser = createAsyncThunk(
         withCredentials: true,
       });
 
-      const user = res.data?.user || res.data?.data;
-      if (!user) return rejectWithValue('userNotFound');
+      if (res.data && res.data.data) {
+        return res.data.data;
+      } else {
+        return rejectWithValue('User data not found in response');
+      }
+    } catch (error) {
+      console.error('❌ getUser API Error:', error);
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to fetch user'
+      );
+    }
+  }
+);
 
-      return { status: 'fetched', user };
+// ========== UPDATE PASSWORD ==========
+export const updatePassword = createAsyncThunk(
+  'auth/updatePassword',
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/api/v1/user/update-password`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+      return res.data;
     } catch (err) {
-      console.error('Get User Error:', err);
-      return rejectWithValue('fetchFail');
+      return rejectWithValue(
+        err.response?.data?.message || 'Failed to update password'
+      );
     }
   }
 );
@@ -142,110 +122,116 @@ export const getUser = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    status: null,
     user: null,
-    loading: false,  // for Signup, OTP send, login
-    fetchingUser : false,
-    passwordStatus: null,
-    passwordError: null,
+    sendOtp: { loading: false, status: null, error: null },
+    verifyOtp: { loading: false, status: null, error: null },
+    signup: { loading: false, status: null, error: null },
+    login: { loading: false, status: null, error: null },
+    getUser: { loading: false, status: null, error: null },
+    updatePassword: { loading: false, status: null, error: null },
   },
+
   reducers: {
-    resetStatus: (state) => {
-      state.status = null;
-    },
     logout: (state) => {
       state.user = null;
-      state.status = null;
-      state.loading = false;
+    },
+    resetAuthState: (state, action) => {
+      const key = action.payload;
+      if (state[key])
+        state[key] = { loading: false, status: null, error: null };
     },
   },
+
   extraReducers: (builder) => {
+    // ----- SEND OTP -----
     builder
-      // ===== SEND OTP =====
       .addCase(sendOtp.pending, (state) => {
-        state.loading = true;
+        state.sendOtp.loading = true;
       })
       .addCase(sendOtp.fulfilled, (state, action) => {
-        state.loading = false;
-        state.status = action.payload;
+        state.sendOtp.loading = false;
+        state.sendOtp.status = action.payload;
       })
       .addCase(sendOtp.rejected, (state, action) => {
-        state.loading = false;
-        state.status = action.payload;
-      })
+        state.sendOtp.loading = false;
+        state.sendOtp.error = action.payload;
+      });
 
-      // ===== VERIFY OTP =====
+    // ----- VERIFY OTP -----
+    builder
       .addCase(verifyOtp.pending, (state) => {
-        state.loading = true;
+        state.verifyOtp.loading = true;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
-        state.loading = false;
-        state.status = action.payload;
+        state.verifyOtp.loading = false;
+        state.verifyOtp.status = action.payload;
       })
       .addCase(verifyOtp.rejected, (state, action) => {
-        state.loading = false;
-        state.status = action.payload;
-      })
+        state.verifyOtp.loading = false;
+        state.verifyOtp.error = action.payload;
+      });
 
-      // ===== SIGNUP =====
+    // ----- SIGNUP -----
+    builder
       .addCase(signup.pending, (state) => {
-        state.loading = true;
+        state.signup.loading = true;
       })
       .addCase(signup.fulfilled, (state, action) => {
-        state.loading = false;
-        state.status = action.payload.status;
-        state.user = action.payload.user;
+        state.signup.loading = false;
+        state.signup.status = 'success';
+        state.user = action.payload;
       })
       .addCase(signup.rejected, (state, action) => {
-        state.loading = false;
-        state.status = action.payload;
-        state.user = null;
-      })
+        state.signup.loading = false;
+        state.signup.error = action.payload;
+      });
 
-      // ===== LOGIN =====
+    // ----- LOGIN -----
+    builder
       .addCase(login.pending, (state) => {
-        state.loading = true;
+        state.login.loading = true;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loading = false;
-        state.status = action.payload.status;
-        state.user = action.payload.user;
+      .addCase(login.fulfilled, (state) => {
+        state.login.loading = false;
+        state.login.status = 'success';
       })
       .addCase(login.rejected, (state, action) => {
-        state.loading = false;
-        state.status = action.payload;
-        state.user = null;
-      })
+        state.login.loading = false;
+        state.login.error = action.payload;
+      });
 
-      // ===== UPDATE PASSWORD =====
-      .addCase(updatePassword.pending, (state) => {
-        state.passwordStatus = 'loading';
-        state.passwordError = null;
-      })
-      .addCase(updatePassword.fulfilled, (state) => {
-        state.passwordStatus = 'succeeded';
-      })
-      .addCase(updatePassword.rejected, (state, action) => {
-        state.passwordStatus = 'failed';
-        state.passwordError = action.payload;
-      })
-
-      // ===== GET USER =====
+    // ----- GET USER -----
+    builder
       .addCase(getUser.pending, (state) => {
-        state.fetchingUser = true;
+        state.getUser.loading = true;
+        state.getUser.error = null;
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        state.fetchingUser = false;
-        state.status = action.payload.status;
-        state.user = action.payload.user;
+        state.getUser.loading = false;
+        state.getUser.status = 'success';
+        state.user = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.fetchingUser = false;
-        state.status = action.payload;
-        state.user = null;
+        state.getUser.loading = false;
+        state.getUser.status = 'failed';
+        state.getUser.error = action.payload;
+      });
+
+    // ----- UPDATE PASSWORD -----
+    builder
+      .addCase(updatePassword.pending, (state) => {
+        state.updatePassword.loading = true;
+      })
+      .addCase(updatePassword.fulfilled, (state) => {
+        state.updatePassword.loading = false;
+        state.updatePassword.status = 'success';
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.updatePassword.loading = false;
+        state.updatePassword.error = action.payload;
       });
   },
 });
 
-export const { resetStatus, logout } = authSlice.actions;
+export const { logout, resetAuthState } = authSlice.actions;
 export default authSlice.reducer;

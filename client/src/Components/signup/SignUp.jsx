@@ -6,18 +6,36 @@ import { Mail, Lock, User, Phone, Check } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendOtp, verifyOtp, signup, resetStatus } from '../../Slice/AuthSlice';
+import {
+  sendOtp,
+  verifyOtp,
+  signup,
+  resetAuthState,
+} from '../../Slice/AuthSlice';
 
 export default function SignupPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
-  const [otpLoading, setOtpLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status, loading } = useSelector((state) => state.auth);
+
+  // Select individual states from Redux
+  const {
+    sendOtp: { loading: otpLoading, status: otpStatus, error: otpError },
+    verifyOtp: {
+      loading: verifyLoading,
+      status: verifyStatus,
+      error: verifyError,
+    },
+    signup: {
+      loading: signupLoading,
+      status: signupStatus,
+      error: signupError,
+    },
+  } = useSelector((state) => state.auth);
 
   const {
     register,
@@ -30,19 +48,40 @@ export default function SignupPage() {
   const emailValue = watch('email');
   const userNameValue = watch('userName');
 
-  // Handle status changes
+  // 🟠 OTP STATUS EFFECT
   useEffect(() => {
-    if (status) {
-      const timer = setTimeout(() => {
-        if (status === 'success') navigate('/');
-        if (status === 'otpVerified') setIsOtpVerified(true);
-        dispatch(resetStatus());
-      }, 3000);
-      return () => clearTimeout(timer);
+    if (otpStatus === 'otpSent') {
+      setOtpSent(true);
+      setResendTimer(60);
+      setTimeout(() => dispatch(resetAuthState('sendOtp')), 3000);
+    } else if (otpError === 'otpFail' || otpError === 'duplicateEmail') {
+      setTimeout(() => dispatch(resetAuthState('sendOtp')), 3000);
     }
-  }, [status, navigate, dispatch]);
+  }, [otpStatus, otpError, dispatch]);
 
-  // Resend OTP countdown
+  // 🟢 VERIFY STATUS EFFECT
+  useEffect(() => {
+    if (verifyStatus === 'otpVerified') {
+      setIsOtpVerified(true);
+      setTimeout(() => dispatch(resetAuthState('verifyOtp')), 3000);
+    } else if (verifyError === 'otpInvalid') {
+      setTimeout(() => dispatch(resetAuthState('verifyOtp')), 3000);
+    }
+  }, [verifyStatus, verifyError, dispatch]);
+
+  // 🟣 SIGNUP STATUS EFFECT
+  useEffect(() => {
+    if (signupStatus === 'success') {
+      setTimeout(() => {
+        navigate('/');
+        dispatch(resetAuthState('signup'));
+      }, 2000);
+    } else if (signupError) {
+      setTimeout(() => dispatch(resetAuthState('signup')), 3000);
+    }
+  }, [signupStatus, signupError, navigate, dispatch]);
+
+  // 🔁 Resend OTP countdown
   useEffect(() => {
     if (resendTimer > 0) {
       const timerId = setInterval(
@@ -53,38 +92,24 @@ export default function SignupPage() {
     }
   }, [resendTimer]);
 
+  // 📨 Send OTP
   const handleSendOtp = async () => {
-    setOtpLoading(true);
-    try {
-      await dispatch(sendOtp({ userName: userNameValue, email: emailValue }));
-      setOtpSent(true);
-      setResendTimer(60);
-    } finally {
-      setOtpLoading(false);
-    }
+    await dispatch(sendOtp({ userName: userNameValue, email: emailValue }));
   };
 
+  // 🔐 Verify OTP
   const handleVerifyOtp = async () => {
-    setOtpLoading(true);
-    try {
-      await dispatch(verifyOtp({ otp }));
-    } finally {
-      setOtpLoading(false);
-    }
+    await dispatch(verifyOtp({ otp }));
   };
 
+  // 🔁 Resend OTP
   const handleResendOtp = async () => {
-    setOtpLoading(true);
-    try {
-      await dispatch(sendOtp({ userName: userNameValue, email: emailValue }));
-      setOtp('');
-      setResendTimer(60);
-    } finally {
-      setOtpLoading(false);
-    }
+    await dispatch(sendOtp({ userName: userNameValue, email: emailValue }));
+    setOtp('');
+    setResendTimer(60);
   };
 
-  // Submit signup data
+  // 🧾 Submit Signup
   const onSubmit = async (data) => {
     try {
       const { userName, email, mobileNumber, password } = data;
@@ -158,11 +183,11 @@ export default function SignupPage() {
                       isOtpVerified ? 'bg-green-600' : 'bg-green-500'
                     } text-white`}
                     onClick={handleVerifyOtp}
-                    disabled={otpLoading || isOtpVerified}
+                    disabled={verifyLoading || isOtpVerified}
                   >
                     {isOtpVerified ? (
                       <Check className="w-5 h-5" />
-                    ) : otpLoading ? (
+                    ) : verifyLoading ? (
                       'Verifying...'
                     ) : (
                       'Verify OTP'
@@ -212,9 +237,9 @@ export default function SignupPage() {
             <Button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
-              disabled={loading || !isOtpVerified}
+              disabled={signupLoading || !isOtpVerified}
             >
-              {loading ? 'Signing Up...' : 'Sign Up'}
+              {signupLoading ? 'Signing Up...' : 'Sign Up'}
             </Button>
           </form>
 
@@ -229,9 +254,14 @@ export default function SignupPage() {
           </p>
         </div>
 
-        {/* Status Modal */}
+        {/* ✅ STATUS MODAL */}
         <AnimatePresence>
-          {status && status !== 'otpVerified' && (
+          {(otpStatus ||
+            otpError ||
+            verifyStatus ||
+            verifyError ||
+            signupStatus ||
+            signupError) && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -243,38 +273,51 @@ export default function SignupPage() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="p-6 rounded-2xl shadow-2xl text-center font-medium max-w-sm w-full mx-4
-                  bg-red-50 border border-red-200 text-red-700"
+                className="p-6 rounded-2xl shadow-2xl text-center font-medium max-w-sm w-full mx-4 bg-white border border-gray-200 text-gray-700"
               >
-                {status === 'success' && (
-                  <p className="text-lg font-semibold text-green-600">
-                    🎉 Account created successfully! Redirecting to home...
+                {/* OTP Status */}
+                {otpStatus === 'otpSent' && (
+                  <p className="text-green-600 font-semibold">
+                    ✅ OTP sent successfully! Please check your inbox.
                   </p>
                 )}
-                {status === 'fail' && (
-                  <p className="text-lg font-semibold">
-                    Signup failed. Please check your details and try again.
+                {otpError === 'otpFail' && (
+                  <p className="text-red-600 font-semibold">
+                    ❌ Failed to send OTP. Try again later.
                   </p>
                 )}
-                {status === 'duplicateEmail' && (
-                  <p className="text-lg font-semibold">
-                    🚨 An account with this email already exists. Please log in
-                    instead.
+                {otpError === 'duplicateEmail' && (
+                  <p className="text-yellow-600 font-semibold">
+                    ⚠️ Email already exists. Please log in instead.
                   </p>
                 )}
-                {status === 'otpSent' && (
-                  <p className="text-lg font-semibold">
-                    ✅ OTP has been sent to your email. Please check your inbox.
+
+                {/* Verify Status */}
+                {verifyStatus === 'otpVerified' && (
+                  <p className="text-green-600 font-semibold">
+                    🎉 OTP Verified! You can now sign up.
                   </p>
                 )}
-                {status === 'otpInvalid' && (
-                  <p className="text-lg font-semibold">
-                    ⚠️ The OTP you entered is incorrect. Please try again.
+                {verifyError === 'otpInvalid' && (
+                  <p className="text-red-600 font-semibold">
+                    ⚠️ Invalid OTP. Please try again.
                   </p>
                 )}
-                {status === 'otpFail' && (
-                  <p className="text-lg font-semibold">
-                    ❌ We couldn’t send the OTP. Please try again later.
+
+                {/* Signup Status */}
+                {signupStatus === 'success' && (
+                  <p className="text-green-600 font-semibold">
+                    🎉 Account created successfully! Redirecting...
+                  </p>
+                )}
+                {signupError === 'duplicateEmail' && (
+                  <p className="text-yellow-600 font-semibold">
+                    ⚠️ Email already registered. Please log in.
+                  </p>
+                )}
+                {signupError && signupError !== 'duplicateEmail' && (
+                  <p className="text-red-600 font-semibold">
+                    ❌ Signup failed. Please try again.
                   </p>
                 )}
               </motion.div>
