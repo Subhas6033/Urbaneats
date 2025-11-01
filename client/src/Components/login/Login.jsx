@@ -40,7 +40,6 @@ function Toast({ message, type, onClose, showClose = false }) {
   );
 }
 
-
 // Card Components
 const Card = ({ children, className = '' }) => (
   <div
@@ -54,7 +53,7 @@ const CardContent = ({ children, className = '' }) => (
   <div className={`p-10 ${className}`}>{children}</div>
 );
 
-// Main login 
+// Main login
 export default function LoginComp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

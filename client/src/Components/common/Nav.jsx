@@ -49,7 +49,6 @@ const Navbar = () => {
             onClick={() => setShowPopup(true)}
             className="font-medium bg-slate-800 hover:bg-slate-700 text-white rounded-full px-3 py-2"
             >
-              {console.log("User Name is :", user?.userName)}
               {user.userName?.split(' ')[0] || 'Profile'}
             </button>
           ) : (

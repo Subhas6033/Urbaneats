@@ -144,7 +144,8 @@ const authSlice = createSlice({
   initialState: {
     status: null,
     user: null,
-    loading: false,
+    loading: false,  // for Signup, OTP send, login
+    fetchingUser : false,
     passwordStatus: null,
     passwordError: null,
   },
@@ -231,15 +232,15 @@ const authSlice = createSlice({
 
       // ===== GET USER =====
       .addCase(getUser.pending, (state) => {
-        state.loading = true;
+        state.fetchingUser = true;
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        state.loading = false;
+        state.fetchingUser = false;
         state.status = action.payload.status;
         state.user = action.payload.user;
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.loading = false;
+        state.fetchingUser = false;
         state.status = action.payload;
         state.user = null;
       });

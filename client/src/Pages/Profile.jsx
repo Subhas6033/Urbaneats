@@ -37,33 +37,28 @@ const Profile = () => {
 
   const selectedPhoto = watchPhoto('profilePhoto');
 
-  // ✅ Load user
+  // Load user
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
 
+  // Set user profile url
   useEffect(() => {
     // Only run when user is loaded and we're not already on a username path
     if (!loading && user?.userName) {
       if (!paramUserName || paramUserName === 'undefined') {
-        console.log('This is the param user', paramUserName);
         const encodedName = encodeURIComponent(user.userName.trim());
         navigate(`/user/profile/${encodedName}`, { replace: true });
-        console.log(`✅ Redirected to /user/profile/${encodedName}`);
-      } else {
-        console.log(`🟢 Already on correct route: ${paramUserName}`);
       }
-    } else {
-      console.log('⏳ Waiting for user details or still loading...');
     }
   }, [user, paramUserName, navigate, loading]);
 
-  // ✅ Pre-fill address
+  // Pre-fill address
   useEffect(() => {
     if (user?.address) setAddress(user.address);
   }, [user]);
 
-  // ✅ Fetch orders
+  // Fetch orders
   useEffect(() => {
     const fetchOrders = async () => {
       if (!user?.userName) return;
@@ -80,7 +75,7 @@ const Profile = () => {
     fetchOrders();
   }, [user]);
 
-  // ✅ Image preview
+  // Image preview
   useEffect(() => {
     if (selectedPhoto && selectedPhoto[0]) {
       const file = selectedPhoto[0];
@@ -90,7 +85,7 @@ const Profile = () => {
     }
   }, [selectedPhoto]);
 
-  // ✅ Save address
+  // Save address
   const handleSaveAddress = async () => {
     if (!address.trim()) {
       setFeedbackModal({
@@ -127,7 +122,7 @@ const Profile = () => {
     }
   };
 
-  // ✅ Logout
+  // Logout
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -143,7 +138,7 @@ const Profile = () => {
     }
   };
 
-  // ✅ Update password
+  // Update password
   const onPasswordUpdate = async (data) => {
     if (data.newPassword !== data.confirmPassword) {
       return setFeedbackModal({
@@ -181,7 +176,7 @@ const Profile = () => {
     }
   };
 
-  // ✅ Upload photo
+  // Upload photo
   const onPhotoUpload = async (data) => {
     const file = data.profilePhoto?.[0];
     if (!file) return;
