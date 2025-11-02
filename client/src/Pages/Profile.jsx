@@ -80,7 +80,8 @@ const Profile = () => {
           <p className="text-gray-600 mb-3">You are not logged in.</p>
           <Button
             onClick={() => navigate('/user/login')}
-            className="bg-green-600 text-white px-6 py-2 rounded-md"
+            variant="primary"
+            className="px-6 py-2"
           >
             Go to Login
           </Button>
@@ -94,7 +95,8 @@ const Profile = () => {
         <p className="text-gray-600 mb-3">You are not logged in.</p>
         <Button
           onClick={() => navigate('/user/login')}
-          className="bg-green-600 text-white px-6 py-2 rounded-md"
+          variant="primary"
+          className="px-6 py-2"
         >
           Go to Login
         </Button>
@@ -112,59 +114,43 @@ const Profile = () => {
               +91 - {user.mobileNumber || '91XXXXXXXXXX'}
             </p>
 
-            <button
+            <Button
               onClick={handleLogout}
+              variant="outline"
+              size="sm"
               className="flex items-center gap-2 text-sm text-gray-700 hover:text-red-600 transition"
             >
               <LogOut size={16} /> Logout
-            </button>
+            </Button>
           </div>
 
           {/* MOBILE NAVIGATION */}
           <nav className="flex justify-around items-center px-2 py-3 space-x-2 overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('addresses')}
-              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
-                activeTab === 'addresses'
-                  ? 'text-green-700 border-b-2 border-green-700'
-                  : 'text-gray-600 hover:text-green-700'
-              }`}
-            >
-              <MapPin size={16} /> <span>Addresses</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
-                activeTab === 'orders'
-                  ? 'text-green-700 border-b-2 border-green-700'
-                  : 'text-gray-600 hover:text-green-700'
-              }`}
-            >
-              <Package size={16} /> <span>Orders</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('gifts')}
-              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
-                activeTab === 'gifts'
-                  ? 'text-green-700 border-b-2 border-green-700'
-                  : 'text-gray-600 hover:text-green-700'
-              }`}
-            >
-              <Gift size={16} /> <span>Gifts</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('privacy')}
-              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
-                activeTab === 'privacy'
-                  ? 'text-green-700 border-b-2 border-green-700'
-                  : 'text-gray-600 hover:text-green-700'
-              }`}
-            >
-              <Lock size={16} /> <span>Privacy</span>
-            </button>
+            {[
+              {
+                id: 'addresses',
+                icon: <MapPin size={16} />,
+                label: 'Addresses',
+              },
+              { id: 'orders', icon: <Package size={16} />, label: 'Orders' },
+              { id: 'gifts', icon: <Gift size={16} />, label: 'Gifts' },
+              { id: 'privacy', icon: <Lock size={16} />, label: 'Privacy' },
+            ].map((tab) => (
+              <Button
+                key={tab.id}
+                variant="secondary"
+                size="sm"
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
+                  activeTab === tab.id
+                    ? 'text-green-700 border-b-2 border-green-700 bg-green-50'
+                    : 'text-gray-600 hover:text-green-700'
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </Button>
+            ))}
           </nav>
         </div>
 
@@ -177,57 +163,43 @@ const Profile = () => {
           </div>
 
           <nav className="flex-1 px-4 py-6 space-y-2">
-            <button
-              onClick={() => setActiveTab('addresses')}
-              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
-                activeTab === 'addresses'
-                  ? 'bg-green-50 text-green-700'
-                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-              }`}
-            >
-              <MapPin size={18} /> My Addresses
-            </button>
-
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
-                activeTab === 'orders'
-                  ? 'bg-green-50 text-green-700'
-                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-              }`}
-            >
-              <Package size={18} /> My Orders
-            </button>
-
-            <button
-              onClick={() => setActiveTab('gifts')}
-              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
-                activeTab === 'gifts'
-                  ? 'bg-green-50 text-green-700'
-                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-              }`}
-            >
-              <Gift size={18} /> E-Gift Cards
-            </button>
-
-            <button
-              onClick={() => setActiveTab('privacy')}
-              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
-                activeTab === 'privacy'
-                  ? 'bg-green-50 text-green-700'
-                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-              }`}
-            >
-              <Lock size={18} /> Account privacy
-            </button>
+            {[
+              {
+                id: 'addresses',
+                icon: <MapPin size={18} />,
+                label: 'My Addresses',
+              },
+              { id: 'orders', icon: <Package size={18} />, label: 'My Orders' },
+              { id: 'gifts', icon: <Gift size={18} />, label: 'E-Gift Cards' },
+              {
+                id: 'privacy',
+                icon: <Lock size={18} />,
+                label: 'Account Privacy',
+              },
+            ].map((tab) => (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? 'outline' : 'secondary'}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center w-full gap-3 px-4 py-3 text-left font-medium rounded-md transition ${
+                  activeTab === tab.id
+                    ? 'bg-green-50 text-green-700 border-green-500'
+                    : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+                }`}
+              >
+                {tab.icon} {tab.label}
+              </Button>
+            ))}
           </nav>
 
-          <button
+          <Button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-6 py-4 border-t text-gray-700 hover:bg-red-50 hover:text-red-600 transition hover:cursor-pointer font-medium"
+            variant="danger"
+            round="none"
+            className="rounded-none flex items-center gap-3 px-6 py-4 border-t font-medium w-full justify-start"
           >
             <LogOut size={18} /> Logout
-          </button>
+          </Button>
         </div>
       </aside>
 
@@ -243,9 +215,9 @@ const Profile = () => {
                 <p className="text-gray-500 mt-1 mb-6 text-sm md:text-base">
                   Tell us where you want your orders delivered
                 </p>
-                <button className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition">
+                <Button variant="primary" size="md">
                   Add New Address
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="w-full max-w-3xl">
@@ -296,7 +268,8 @@ const Profile = () => {
           <div className="mt-4 flex justify-end">
             <Button
               onClick={() => setFeedbackModal((p) => ({ ...p, open: false }))}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+              variant="primary"
+              size="sm"
             >
               Close
             </Button>

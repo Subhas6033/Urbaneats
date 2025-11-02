@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FadeInUp, FadeInScale } from '../Utility/Animation';
 import { Helmet } from 'react-helmet-async';
 import { sampleNews } from '../Data/index';
+import {Button} from '../Components/index';
 
 const NewsPage = () => {
   const [news, setNews] = useState([]);
@@ -23,6 +24,7 @@ const NewsPage = () => {
           content="Stay updated with the latest news from Urban Eats. Discover new menu launches, special promotions, and exciting updates about our journey."
         />
       </Helmet>
+
       <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-gray-50 to-white min-h-screen">
         <div className="max-w-6xl mx-auto space-y-12">
           {/* Header */}
@@ -74,12 +76,17 @@ const NewsPage = () => {
                       {article.category}
                     </span>
                   </div>
-                  <button
+
+                  {/* ✅ Updated with your Button */}
+                  <Button
                     onClick={() => setSelectedArticle(article)}
-                    className="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+                    variant="green"
+                    size="md"
+                    round="md"
+                    className="mt-auto"
                   >
                     View More
-                  </button>
+                  </Button>
                 </div>
               </motion.div>
             ))}
@@ -109,12 +116,17 @@ const NewsPage = () => {
                 exit="hidden"
                 className="bg-white rounded-2xl shadow-xl max-w-2xl w-full relative"
               >
-                <button
+                {/* ✅ Close icon button (top-right) */}
+                <Button
                   onClick={() => setSelectedArticle(null)}
-                  className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+                  variant="secondary"
+                  size="sm"
+                  round="full"
+                  className="absolute top-3 right-3 !p-2 bg-white hover:bg-gray-100 shadow-none"
                 >
-                  <X className="w-6 h-6" />
-                </button>
+                  <X className="w-5 h-5 text-gray-600" />
+                </Button>
+
                 <img
                   src={selectedArticle.image}
                   alt={selectedArticle.title}
@@ -137,12 +149,17 @@ const NewsPage = () => {
                   <p className="text-gray-700 text-base leading-relaxed">
                     {selectedArticle.fullText}
                   </p>
-                  <button
+
+                  {/* ✅ Modal close button */}
+                  <Button
                     onClick={() => setSelectedArticle(null)}
-                    className="mt-4 px-5 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+                    variant="green"
+                    size="md"
+                    round="md"
+                    className="mt-4"
                   >
                     Close
-                  </button>
+                  </Button>
                 </div>
               </motion.div>
             </motion.div>

@@ -4,9 +4,11 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { cateringServices, sampleMenu, steps } from '../../Data/index';
+import { Button } from '../../Components';
 
 const CateringPage = () => {
   const navigate = useNavigate();
+
   return (
     <>
       <Helmet>
@@ -16,6 +18,7 @@ const CateringPage = () => {
           content="Urban Eats offers premium catering services for events of all sizes. From office lunches to weddings, enjoy fresh, delicious meals delivered with care."
         />
       </Helmet>
+
       <div className="px-6 md:px-12 lg:px-24 py-16 bg-gray-50">
         {/* Hero Section */}
         <motion.section
@@ -31,13 +34,16 @@ const CateringPage = () => {
             Bring the taste of <span className="font-semibold">Urban Eats</span>{' '}
             to your events. Corporate, weddings, parties — we cater it all!
           </p>
-          <button
-            onClick={() => navigate('/book-catering')}
-            aria-label="Book Catering"
-            className="mt-8 px-8 py-3 bg-emerald-600 text-white font-semibold rounded-full shadow hover:bg-emerald-700 transition"
-          >
-            Book Catering
-          </button>
+
+          <div className="mt-8 flex justify-center">
+            <Button
+              onClick={() => navigate('/book-catering')}
+              aria-label="Book Catering"
+              className="px-8 py-3 rounded-full text-lg font-semibold"
+            >
+              Book Catering
+            </Button>
+          </div>
         </motion.section>
 
         {/* Services */}
@@ -137,12 +143,13 @@ const CateringPage = () => {
             and private parties. Experience hassle-free catering with delicious
             food and exceptional service.
           </p>
-          <button
+
+          <Button
             aria-label="Request a Catering Quote"
-            className="px-8 py-3 bg-emerald-600 text-white font-semibold rounded-full shadow hover:bg-emerald-700 transition"
+            className="px-8 py-3 rounded-full text-lg font-semibold"
           >
             Request a Quote
-          </button>
+          </Button>
         </motion.section>
       </div>
     </>

@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { navItems } from '../../Data/index';
 import { useSelector } from 'react-redux';
-import {Popup} from '../index'
+import { Popup, Button } from '../index';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false); // Mobile menu
@@ -42,38 +42,53 @@ const Navbar = () => {
           ))}
         </ul>
 
-        {/* User + Orders */}
+        {/* Desktop Buttons */}
         <div className="hidden lg:flex items-center gap-5 px-2">
           {user?.userName ? (
-            <button
-            onClick={() => setShowPopup(true)}
-            className="font-medium bg-slate-800 hover:bg-slate-700 text-white rounded-full px-3 py-2"
+            <Button
+              onClick={() => setShowPopup(true)}
+              variant="green"
+              size="md"
+              round="md"
+              className="bg-slate-800 hover:bg-slate-700 text-white"
             >
               {user.userName?.split(' ')[0] || 'Profile'}
-            </button>
+            </Button>
           ) : (
-            <Link
-              to="/user/signup"
-              className="px-3 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white shadow-md"
-            >
-              Signup
+            <Link to="/user/signup">
+              <Button
+                variant="green"
+                size="md"
+                round="md"
+                className="bg-slate-800 hover:bg-slate-700 text-white shadow-md"
+              >
+                Signup
+              </Button>
             </Link>
           )}
-          <Link
-            to="/orders"
-            className="py-2 px-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg"
-          >
-            Your Orders
+
+          <Link to="/orders">
+            <Button
+              variant="primary"
+              size="md"
+              round="md"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg"
+            >
+              Your Orders
+            </Button>
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
+        {/* Mobile Menu Toggle */}
+        <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="lg:hidden text-black"
+          variant="secondary"
+          size="sm"
+          round="full"
+          className="lg:hidden text-black bg-transparent hover:bg-gray-100 p-2 border"
         >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </Button>
       </div>
 
       {/* Mobile Dropdown */}
@@ -99,40 +114,49 @@ const Navbar = () => {
           </ul>
 
           <div className="mt-6">
-            <Link
-              to="/orders"
-              onClick={() => setIsOpen(false)}
-              className="block text-center px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-md"
-            >
-              Your Orders
+            <Link to="/orders" onClick={() => setIsOpen(false)}>
+              <Button
+                variant="primary"
+                size="md"
+                round="lg"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-md"
+              >
+                Your Orders
+              </Button>
             </Link>
           </div>
 
           <div className="mt-6 flex justify-center">
             {user ? (
-              <button
+              <Button
                 onClick={() => {
                   setShowPopup(true);
                   setIsOpen(false);
                 }}
-                className="font-medium bg-slate-800 hover:bg-slate-700 text-white rounded-full px-3 py-2"
+                variant="secondary"
+                size="md"
+                round="full"
+                className="bg-slate-800 hover:bg-slate-700 text-white"
               >
                 {user.userName || 'Profile'}
-              </button>
+              </Button>
             ) : (
-              <Link
-                to="/user/signup"
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white shadow-md"
-              >
-                Signup
+              <Link to="/user/signup" onClick={() => setIsOpen(false)}>
+                <Button
+                  variant="primary"
+                  size="md"
+                  round="full"
+                  className="bg-slate-800 hover:bg-slate-700 text-white shadow-md"
+                >
+                  Signup
+                </Button>
               </Link>
             )}
           </div>
         </div>
       )}
 
-      {/* ✅ User Popup */}
+      {/* User Popup */}
       <Popup
         isOpen={showPopup}
         onClose={() => setShowPopup(false)}
@@ -140,19 +164,30 @@ const Navbar = () => {
       >
         <div className="space-y-4">
           <p className="text-gray-700">Welcome, {user?.userName || 'Guest'}!</p>
+
           <Link
             to={`/user/profile/${user?.userName}`}
             onClick={() => setShowPopup(false)}
-            className="block text-center px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold"
           >
-            View Profile
+            <Button
+              variant="primary"
+              size="md"
+              round="lg"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold"
+            >
+              View Profile
+            </Button>
           </Link>
-          <Link
-            to="/orders"
-            onClick={() => setShowPopup(false)}
-            className="block text-center px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold"
-          >
-            Your Orders
+          <div>{''}</div>
+          <Link to="/orders" onClick={() => setShowPopup(false)}>
+            <Button
+              variant="outline"
+              size="md"
+              round="lg"
+              className="w-full border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold"
+            >
+              Your Orders
+            </Button>
           </Link>
         </div>
       </Popup>

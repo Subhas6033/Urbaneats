@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Button} from '../index';
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
   console.log(error);
   return (
@@ -7,13 +7,21 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
       <h1 className="text-3xl font-bold text-red-600 mb-4">
         Oops! Something went wrong.
       </h1>
-      <p className="text-gray-700 mb-6">Try After Sometime. <br /> {error.message}</p>
-      <button
+      <p className="text-gray-700 mb-6">
+        Try After Sometime.
+        <br />
+        {error.message}
+      </p>
+
+      {/* Using your custom Button component */}
+      <Button
         onClick={resetErrorBoundary}
-        className="px-6 py-3 bg-emerald-500 text-white rounded-xl shadow-md hover:bg-emerald-600"
+        variant="green"
+        size="lg"
+        className="rounded-xl shadow-md"
       >
         Try Again
-      </button>
+      </Button>
     </div>
   );
 };

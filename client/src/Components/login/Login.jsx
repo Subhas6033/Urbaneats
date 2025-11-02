@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login, resetAuthState, getUser } from '../../Slice/AuthSlice';
 import { useForm } from 'react-hook-form';
 
-//  Toast Component
+// Toast Component
 function Toast({ message, type, onClose, showClose = false }) {
   if (!message) return null;
 
@@ -58,7 +58,7 @@ export default function LoginComp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //  Extract modular login state
+  // Redux state
   const {
     login: { status: loginStatus, loading: loginLoading, error: loginError },
     getUser: { status: userStatus, error: userError },
@@ -78,17 +78,14 @@ export default function LoginComp() {
     dispatch(login(data));
   };
 
-  //  Handle login + redirect + toast
+  //  Handle toast + redirect
   useEffect(() => {
     if (loginStatus === 'success') {
       setToast({ message: 'Successfully logged in 🎉', type: 'success' });
 
-      // Wait for user to be fetched from backend
       dispatch(getUser())
         .unwrap()
         .then((fetchedUser) => {
-
-          // Delay navigation slightly so toast can show
           setTimeout(() => {
             const encodedName = encodeURIComponent(fetchedUser?.userName || '');
             if (encodedName) {
@@ -96,8 +93,6 @@ export default function LoginComp() {
             } else {
               navigate('/user/signup');
             }
-
-            //  Reset the login slice and clear toast
             dispatch(resetAuthState('login'));
             setToast({ message: '', type: '' });
           }, 1500);
@@ -185,10 +180,12 @@ export default function LoginComp() {
                 })}
               />
 
+              {/* Updated Custom Button */}
               <Button
                 type="submit"
-                variant="primary"
+                variant="green"
                 size="md"
+                round="lg"
                 disabled={loginLoading || isSubmitting}
                 className="w-full mt-2"
               >

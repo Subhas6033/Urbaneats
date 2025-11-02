@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { MenuCard } from '../../Components/index';
+import { MenuCard, Button } from '../../Components';
 import MenuItems from './MenuItems';
 import {
   SlideUp,
@@ -52,12 +53,13 @@ const MenuPage = () => {
   return (
     <>
       <Helmet>
-        <title>Urban Eats | Menu </title>
+        <title>Urban Eats | Menu</title>
         <meta
           name="description"
           content="Discover the full menu of Urban Eats - freshly cooked meals, desserts, and beverages."
         />
       </Helmet>
+
       <div className="px-6 md:px-12 lg:px-24 py-10">
         <FadeInDown>
           <div className="text-center mb-12">
@@ -90,20 +92,23 @@ const MenuPage = () => {
         <FadeInUp>
           <div className="flex justify-center gap-4 flex-wrap mb-8">
             {categories.map((cat) => (
-              <button
+              <Button
                 key={cat}
                 onClick={() => {
                   setSelectedCategory(cat);
                   setCurrentPage(1);
                 }}
-                className={`px-4 py-2 rounded-full font-medium transition ${
+                variant={selectedCategory === cat ? 'green' : 'secondary'}
+                round="full"
+                size="md"
+                className={`font-medium ${
                   selectedCategory === cat
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? ''
+                    : 'text-gray-700 hover:bg-gray-300'
                 }`}
               >
                 {cat}
-              </button>
+              </Button>
             ))}
           </div>
         </FadeInUp>
@@ -132,35 +137,44 @@ const MenuPage = () => {
         {totalPages > 1 && (
           <ScaleIn>
             <div className="flex justify-center items-center mt-8 gap-3 flex-wrap">
-              <button
+              <Button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-4 py-2 rounded-md bg-gray-200 text-gray-700 disabled:opacity-50"
+                variant="secondary"
+                size="md"
+                round="md"
+                className="text-gray-700"
               >
                 Prev
-              </button>
+              </Button>
 
               {[...Array(totalPages)].map((_, idx) => (
-                <button
+                <Button
                   key={idx + 1}
                   onClick={() => handlePageChange(idx + 1)}
-                  className={`px-4 py-2 rounded-md ${
+                  variant={currentPage === idx + 1 ? 'green' : 'secondary'}
+                  size="md"
+                  round="md"
+                  className={`${
                     currentPage === idx + 1
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-gray-200 text-gray-700'
+                      ? ''
+                      : 'text-gray-700 hover:bg-gray-300'
                   }`}
                 >
                   {idx + 1}
-                </button>
+                </Button>
               ))}
 
-              <button
+              <Button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 rounded-md bg-gray-200 text-gray-700 disabled:opacity-50"
+                variant="secondary"
+                size="md"
+                round="md"
+                className="text-gray-700"
               >
                 Next
-              </button>
+              </Button>
             </div>
           </ScaleIn>
         )}

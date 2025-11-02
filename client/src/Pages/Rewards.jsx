@@ -2,8 +2,9 @@
 import React from 'react';
 import { Gift, Crown, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { FadeInUp, FadeInDown, ScaleUp } from '../Utility/Animation'; 
-import {Helmet} from 'react-helmet-async'
+import { FadeInUp, FadeInDown, ScaleUp } from '../Utility/Animation';
+import { Helmet } from 'react-helmet-async';
+import { Button } from '../Components';
 
 const RewardsPage = () => {
   const userPoints = 320;
@@ -37,12 +38,13 @@ const RewardsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Urban Eats | Rewards </title>
+        <title>Urban Eats | Rewards</title>
         <meta
           name="description"
           content="Join Urban Eats Rewards and earn points with every order. Redeem rewards for free meals, exclusive offers, and more delicious benefits."
         />
       </Helmet>
+
       <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Header */}
@@ -114,23 +116,25 @@ const RewardsPage = () => {
                         Requires {reward.points} points
                       </p>
                     </div>
-                    <button
+
+                    {/*  Custom Button Used */}
+                    <Button
                       disabled={userPoints < reward.points}
-                      className={`mt-6 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold transition ${
+                      className={`mt-6 w-full flex items-center justify-center gap-2 ${
                         userPoints >= reward.points
-                          ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white hover:from-pink-600 hover:to-red-600 shadow-lg'
+                          ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white hover:from-pink-600 hover:to-red-600'
                           : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                       }`}
                     >
                       Redeem <ArrowRight className="w-4 h-4" />
-                    </button>
+                    </Button>
                   </ScaleUp>
                 ))}
               </div>
             </div>
           </FadeInUp>
 
-          {/* CTA */}
+          {/* CTA Section */}
           <FadeInUp>
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-2xl p-10 text-center shadow-lg">
               <h2 className="text-3xl font-bold mb-3">
@@ -139,12 +143,16 @@ const RewardsPage = () => {
               <p className="mb-6 text-purple-100">
                 Earn points every time you shop. More points = more rewards!
               </p>
-              <a
-                href="/menu"
-                className="px-8 py-3 bg-white text-purple-700 rounded-xl font-semibold shadow hover:bg-gray-100 transition"
+
+              {/* Custom Button Instead of <a> */}
+              <Button
+                variant="secondary"
+                size="lg"
+                className="bg-white text-purple-700 hover:bg-gray-100 font-semibold"
+                onClick={() => (window.location.href = '/menu')}
               >
                 Order Now
-              </a>
+              </Button>
             </div>
           </FadeInUp>
         </div>

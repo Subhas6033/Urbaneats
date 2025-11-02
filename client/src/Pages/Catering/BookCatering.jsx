@@ -1,191 +1,102 @@
-import React, { useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import { useDispatch } from 'react-redux';
-import { confirmCateringOrder } from '../../Slice/OrderSlice';
-import { Helmet } from 'react-helmet-async';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import { Input, Button } from '../../Components'; // ✅ import your components
+import React from 'react';
 
-const CateringBookPage = () => {
-  const dispatch = useDispatch();
-
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    mobile: '',
-    eventType: '',
-    date: '',
-    guests: '',
-    notes: '',
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // ✅ Simple validation
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.mobile ||
-      !formData.eventType ||
-      !formData.date
-    ) {
-      toast.error('⚠️ Please fill in all required fields.');
-      return;
-    }
-
-    // ✅ Dispatch to Redux
-    dispatch(confirmCateringOrder(formData));
-
-    toast.success('🎉 Catering request submitted! We will contact you soon.');
-
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      mobile: '',
-      eventType: '',
-      date: '',
-      guests: '',
-      notes: '',
-    });
-  };
-
+const ContactPage = () => {
   return (
-    <>
-      <Helmet>
-        <title>Urban Eats | Book Catering</title>
-        <meta
-          name="description"
-          content="Easily book catering with Urban Eats for your next event. Choose your menu, set your date, and enjoy fresh, delicious meals delivered with professional service."
-        />
-      </Helmet>
-      <div className="px-6 md:px-12 lg:px-24 py-16 bg-gray-50 min-h-screen">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
-            Book Catering
-          </h1>
-          <p className="text-gray-600 text-center mb-8">
-            Fill out the form below and we’ll reach out to plan your event.
-          </p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white px-6 py-16 flex flex-col items-center">
+      {/* Hero */}
+      <div className="max-w-3xl text-center mb-16">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6">
+          Contact <span className="text-green-600">Urban Eats</span>
+        </h1>
+        <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+          Got a question, feedback, or just want to say hello? We’d love to hear
+          from you! Reach out using the form below, or connect with us directly.
+        </p>
+      </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-6">
-            {/* Name */}
+      <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12">
+        {/* Contact Info */}
+        <div className="space-y-8">
+          <div className="flex items-start gap-4">
+            <MapPin className="w-8 h-8 text-green-600 shrink-0" />
             <div>
-              <label className="block font-medium mb-2">Full Name *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                placeholder="John Doe"
-                required
-              />
+              <h3 className="text-xl font-semibold text-gray-900">Visit Us</h3>
+              <p className="text-gray-600">123 Main Street, Downtown City</p>
             </div>
+          </div>
 
-            {/* Email */}
+          <div className="flex items-start gap-4">
+            <Mail className="w-8 h-8 text-green-600 shrink-0" />
             <div>
-              <label className="block font-medium mb-2">Email *</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                placeholder="john@example.com"
-                required
-              />
+              <h3 className="text-xl font-semibold text-gray-900">Email Us</h3>
+              <p className="text-gray-600">support@urbaneats.com</p>
             </div>
+          </div>
 
-            {/* Mobile */}
+          <div className="flex items-start gap-4">
+            <Phone className="w-8 h-8 text-green-600 shrink-0" />
             <div>
-              <label className="block font-medium mb-2">Mobile Number *</label>
-              <input
-                type="tel"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                placeholder="+91 98765 43210"
-                required
-              />
+              <h3 className="text-xl font-semibold text-gray-900">Call Us</h3>
+              <p className="text-gray-600">+1 (555) 123-4567</p>
             </div>
-
-            {/* Event Type */}
-            <div>
-              <label className="block font-medium mb-2">Event Type *</label>
-              <select
-                name="eventType"
-                value={formData.eventType}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                required
-              >
-                <option value="">Select Event Type</option>
-                <option value="Corporate">Corporate</option>
-                <option value="Wedding">Wedding</option>
-                <option value="Party">Private Party</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            {/* Date */}
-            <div>
-              <label className="block font-medium mb-2">Event Date *</label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                required
-              />
-            </div>
-
-            {/* Guests */}
-            <div>
-              <label className="block font-medium mb-2">Number of Guests</label>
-              <input
-                type="number"
-                name="guests"
-                value={formData.guests}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                placeholder="e.g. 100"
-              />
-            </div>
-
-            {/* Notes */}
-            <div>
-              <label className="block font-medium mb-2">Additional Notes</label>
-              <textarea
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none"
-                rows="4"
-                placeholder="Any dietary preferences, menu requests, etc."
-              />
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
-            >
-              Submit Request
-            </button>
-          </form>
+          </div>
         </div>
 
-        {/* Toast container */}
-        <Toaster />
+        {/* Contact Form */}
+        <form
+          className="bg-white rounded-2xl shadow-lg p-8 space-y-6"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <Input
+            id="name"
+            name="name"
+            label="Name"
+            placeholder="Your full name"
+            required
+          />
+
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            label="Email"
+            placeholder="you@example.com"
+            required
+          />
+
+          {/* Textarea manually styled but matches Input look */}
+          <div>
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Message
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="3"
+              placeholder="Write your message..."
+              className="w-full rounded-xl border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:outline-none px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm"
+              required
+            ></textarea>
+          </div>
+
+          <Button
+            type="submit"
+            variant="green"
+            size="md"
+            round="xl"
+            className="w-full shadow-md"
+          >
+            Send Message
+          </Button>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 
-export default CateringBookPage;
+export default ContactPage;

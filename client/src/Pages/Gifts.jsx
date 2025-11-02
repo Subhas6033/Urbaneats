@@ -6,6 +6,7 @@ import { confirmOrder } from '../Slice/OrderSlice';
 import { FadeInScale, FadeInUp } from '../Utility/Animation';
 import { Helmet } from 'react-helmet-async';
 import { giftOptions } from '../Data/index';
+import { Button } from '../Components'; 
 
 const GiftPage = () => {
   const dispatch = useDispatch();
@@ -58,7 +59,7 @@ const GiftPage = () => {
     dispatch(confirmOrder(giftOrder));
     toast.success('🎉 Gift sent successfully!');
 
-    // reset
+    // Reset form
     setSelectedGift(null);
     setPaymentMethod('');
     setFormData({
@@ -73,12 +74,13 @@ const GiftPage = () => {
   return (
     <>
       <Helmet>
-        <title>Urban Eats | Gifts </title>
+        <title>Urban Eats | Gifts</title>
         <meta
           name="description"
-          content="Stay updated with the latest news from Urban Eats. Discover new menu launches, special promotions, and exciting updates about our journey."
+          content="Send thoughtful gifts and vouchers to your loved ones with Urban Eats."
         />
       </Helmet>
+
       <div className="px-6 md:px-12 lg:px-24 py-16 bg-gradient-to-br from-pink-50 to-red-50 min-h-screen">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Header */}
@@ -170,31 +172,33 @@ const GiftPage = () => {
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <FadeInScale>
-                  <button
+                  <Button
+                    type="button"
                     onClick={() => setPaymentMethod('card')}
-                    className={`flex items-center gap-2 p-4 rounded-xl border-2 shadow-sm hover:shadow-md transition ${
+                    className={`flex items-center gap-2 p-4 w-full justify-center rounded-xl border-2 shadow-sm hover:shadow-md transition font-medium ${
                       paymentMethod === 'card'
-                        ? 'border-purple-500 bg-purple-50'
-                        : 'border-gray-200 bg-white'
+                        ? 'border-purple-500 bg-purple-50 text-purple-700'
+                        : 'border-gray-200 bg-white text-gray-800'
                     }`}
                   >
                     <CreditCard className="w-5 h-5 text-purple-600" />
                     Credit / Debit Card
-                  </button>
+                  </Button>
                 </FadeInScale>
 
                 <FadeInScale>
-                  <button
+                  <Button
+                    type="button"
                     onClick={() => setPaymentMethod('upi')}
-                    className={`flex items-center gap-2 p-4 rounded-xl border-2 shadow-sm hover:shadow-md transition ${
+                    className={`flex items-center gap-2 p-4 w-full justify-center rounded-xl border-2 shadow-sm hover:shadow-md transition font-medium ${
                       paymentMethod === 'upi'
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 bg-white'
+                        ? 'border-green-500 bg-green-50 text-green-700'
+                        : 'border-gray-200 bg-white text-gray-800'
                     }`}
                   >
                     <Smartphone className="w-5 h-5 text-green-600" />
                     UPI Payment
-                  </button>
+                  </Button>
                 </FadeInScale>
               </div>
 
@@ -229,15 +233,15 @@ const GiftPage = () => {
             </div>
           </FadeInUp>
 
-          {/* Send Button */}
+          {/* Send Gift Button */}
           <FadeInScale>
             <div className="text-center">
-              <button
+              <Button
                 onClick={handleSendGift}
                 className="px-8 py-3 bg-gradient-to-r from-pink-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:from-pink-600 hover:to-red-600 transition flex items-center justify-center gap-2 mx-auto"
               >
                 <Send className="w-5 h-5" /> Pay & Send Gift
-              </button>
+              </Button>
             </div>
           </FadeInScale>
         </div>

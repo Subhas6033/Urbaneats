@@ -22,7 +22,7 @@ export default function SignupPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Select individual states from Redux
+  // Select states from Redux
   const {
     sendOtp: { loading: otpLoading, status: otpStatus, error: otpError },
     verifyOtp: {
@@ -48,7 +48,7 @@ export default function SignupPage() {
   const emailValue = watch('email');
   const userNameValue = watch('userName');
 
-  // 🟠 OTP STATUS EFFECT
+  //  OTP STATUS EFFECT
   useEffect(() => {
     if (otpStatus === 'otpSent') {
       setOtpSent(true);
@@ -59,7 +59,7 @@ export default function SignupPage() {
     }
   }, [otpStatus, otpError, dispatch]);
 
-  // 🟢 VERIFY STATUS EFFECT
+  //  VERIFY STATUS EFFECT
   useEffect(() => {
     if (verifyStatus === 'otpVerified') {
       setIsOtpVerified(true);
@@ -69,7 +69,7 @@ export default function SignupPage() {
     }
   }, [verifyStatus, verifyError, dispatch]);
 
-  // 🟣 SIGNUP STATUS EFFECT
+  //  SIGNUP STATUS EFFECT
   useEffect(() => {
     if (signupStatus === 'success') {
       setTimeout(() => {
@@ -81,7 +81,7 @@ export default function SignupPage() {
     }
   }, [signupStatus, signupError, navigate, dispatch]);
 
-  // 🔁 Resend OTP countdown
+  //  Resend OTP countdown
   useEffect(() => {
     if (resendTimer > 0) {
       const timerId = setInterval(
@@ -92,24 +92,24 @@ export default function SignupPage() {
     }
   }, [resendTimer]);
 
-  // 📨 Send OTP
+  //  Send OTP
   const handleSendOtp = async () => {
     await dispatch(sendOtp({ userName: userNameValue, email: emailValue }));
   };
 
-  // 🔐 Verify OTP
+  //  Verify OTP
   const handleVerifyOtp = async () => {
     await dispatch(verifyOtp({ otp }));
   };
 
-  // 🔁 Resend OTP
+  //  Resend OTP
   const handleResendOtp = async () => {
     await dispatch(sendOtp({ userName: userNameValue, email: emailValue }));
     setOtp('');
     setResendTimer(60);
   };
 
-  // 🧾 Submit Signup
+  //  Submit Signup
   const onSubmit = async (data) => {
     try {
       const { userName, email, mobileNumber, password } = data;
@@ -158,7 +158,9 @@ export default function SignupPage() {
             {!otpSent ? (
               <Button
                 type="button"
-                className="w-full bg-orange-500 text-white"
+                variant="primary"
+                size="md"
+                className="w-full"
                 onClick={handleSendOtp}
                 disabled={!emailValue || !userNameValue || otpLoading}
               >
@@ -179,9 +181,9 @@ export default function SignupPage() {
                 <div className="flex gap-2 mt-2">
                   <Button
                     type="button"
-                    className={`flex-1 flex items-center justify-center gap-2 ${
-                      isOtpVerified ? 'bg-green-600' : 'bg-green-500'
-                    } text-white`}
+                    variant={isOtpVerified ? 'success' : 'secondary'}
+                    size="md"
+                    className="flex-1 flex items-center justify-center gap-2"
                     onClick={handleVerifyOtp}
                     disabled={verifyLoading || isOtpVerified}
                   >
@@ -193,10 +195,13 @@ export default function SignupPage() {
                       'Verify OTP'
                     )}
                   </Button>
+
                   {!isOtpVerified && (
                     <Button
                       type="button"
-                      className="flex-1 bg-orange-500 text-white"
+                      variant="outline"
+                      size="md"
+                      className="flex-1"
                       onClick={handleResendOtp}
                       disabled={resendTimer > 0 || otpLoading}
                     >
@@ -236,7 +241,9 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+              variant="primary"
+              size="md"
+              className="w-full font-semibold"
               disabled={signupLoading || !isOtpVerified}
             >
               {signupLoading ? 'Signing Up...' : 'Sign Up'}
@@ -254,7 +261,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        {/* ✅ STATUS MODAL */}
+        {/*  STATUS MODAL */}
         <AnimatePresence>
           {(otpStatus ||
             otpError ||
@@ -275,7 +282,6 @@ export default function SignupPage() {
                 transition={{ duration: 0.3 }}
                 className="p-6 rounded-2xl shadow-2xl text-center font-medium max-w-sm w-full mx-4 bg-white border border-gray-200 text-gray-700"
               >
-                {/* OTP Status */}
                 {otpStatus === 'otpSent' && (
                   <p className="text-green-600 font-semibold">
                     ✅ OTP sent successfully! Please check your inbox.
@@ -291,8 +297,6 @@ export default function SignupPage() {
                     ⚠️ Email already exists. Please log in instead.
                   </p>
                 )}
-
-                {/* Verify Status */}
                 {verifyStatus === 'otpVerified' && (
                   <p className="text-green-600 font-semibold">
                     🎉 OTP Verified! You can now sign up.
@@ -303,8 +307,6 @@ export default function SignupPage() {
                     ⚠️ Invalid OTP. Please try again.
                   </p>
                 )}
-
-                {/* Signup Status */}
                 {signupStatus === 'success' && (
                   <p className="text-green-600 font-semibold">
                     🎉 Account created successfully! Redirecting...

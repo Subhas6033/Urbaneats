@@ -1,9 +1,10 @@
-import { Mail, Phone, MapPin, Contact } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import { Button } from '../Components'; 
 
 const ContactPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white px-6 py-16 flex flex-col items-center">
-      {/* Hero */}
+      {/* Hero Section */}
       <div className="max-w-3xl text-center mb-16">
         <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6">
           Contact <span className="text-green-600">Urban Eats</span>
@@ -92,12 +93,12 @@ const ContactPage = () => {
             ></textarea>
           </div>
 
-          <button
+          <Button
             type="submit"
-            className="w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
           >
             Send Message
-          </button>
+          </Button>
         </form>
       </div>
     </div>

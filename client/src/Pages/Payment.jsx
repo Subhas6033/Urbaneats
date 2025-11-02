@@ -6,6 +6,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { IndianRupee } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
+import {Button} from '../Components/index';
 
 const Payment = () => {
   const upiId = import.meta.env.VITE_UPI_ID;
@@ -34,7 +35,6 @@ const Payment = () => {
 
     dispatch(confirmOrder(orderDetails));
 
-    // ✅ Toast notification
     toast.success(`Your Order for ${item} is Confirmed!!!`, {
       duration: 4000,
       position: 'top-center',
@@ -42,17 +42,18 @@ const Payment = () => {
   };
 
   if (!item)
-    return <p className="text-center mt-20 text-red-600"> No item selected.</p>;
+    return <p className="text-center mt-20 text-red-600">No item selected.</p>;
 
   return (
     <>
       <Helmet>
-        <title>Urban Eats | Payments </title>
+        <title>Urban Eats | Payments</title>
         <meta
           name="description"
           content="Securely complete your payment with Urban Eats. We support multiple payment options to ensure a smooth, fast, and hassle-free checkout experience."
         />
       </Helmet>
+
       <form
         onSubmit={handleConfirmOrder}
         className="min-h-screen bg-gray-100 p-6 flex justify-center"
@@ -90,11 +91,11 @@ const Payment = () => {
                   />
                   <span className="font-medium">{option.label}</span>
                 </label>
-                {/* Awarness Message to not to pay */}
               </div>
             ))}
-            <p className='text-xl font-bold text-black'>
-              This is just a Prototype of the Payment Section. SO do not pay
+
+            <p className="text-xl font-bold text-black">
+              This is just a Prototype of the Payment Section. So do not pay
               anything.
             </p>
           </div>
@@ -105,7 +106,6 @@ const Payment = () => {
               Payment Details
             </h2>
 
-            {/* ✅ UPI Section */}
             {paymentMethod === 'UPI' && (
               <>
                 <div>
@@ -161,7 +161,6 @@ const Payment = () => {
               </>
             )}
 
-            {/* ✅ Card Payment */}
             {paymentMethod === 'Card Payment' && (
               <div className="space-y-3">
                 <input
@@ -195,7 +194,6 @@ const Payment = () => {
               </div>
             )}
 
-            {/* ✅ Net Banking */}
             {paymentMethod === 'Net Banking' && (
               <div className="space-y-3 text-sm">
                 <select
@@ -211,7 +209,6 @@ const Payment = () => {
               </div>
             )}
 
-            {/* ✅ Cash On Delivery */}
             {paymentMethod === 'Cash On Delivery' && (
               <p className="text-green-600 text-sm">
                 You can pay with cash or card when your order is delivered.
@@ -224,6 +221,7 @@ const Payment = () => {
             <h2 className="text-xl font-semibold border-b pb-2">
               Order Summary
             </h2>
+
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
                 <span>Item</span>
@@ -254,6 +252,7 @@ const Payment = () => {
             <h3 className="text-md font-semibold pt-4 border-t">
               Delivery Details
             </h3>
+
             <div className="space-y-2 text-sm">
               <input
                 type="text"
@@ -279,17 +278,19 @@ const Payment = () => {
               ></textarea>
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="w-full bg-emerald-600 text-white py-2 rounded-md font-semibold hover:bg-emerald-700 transition"
+              variant="green"
+              size="md"
+              round="md"
+              className="w-full mt-2"
             >
               Confirm & Pay ₹{totalPrice}
-            </button>
+            </Button>
           </div>
         </div>
       </form>
 
-      {/* Toast container */}
       <Toaster />
     </>
   );

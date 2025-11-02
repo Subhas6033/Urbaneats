@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { Button } from '../index';
 
 /**
  * General purpose popup component.
@@ -46,13 +47,16 @@ export default function Popup({
               <div className="flex justify-between items-center border-b px-4 py-3">
                 {title && <h2 className="text-lg font-semibold">{title}</h2>}
                 {onClose && (
-                  <button
+                  <Button
                     onClick={onClose}
                     aria-label="Close popup"
-                    className="text-gray-500 hover:text-gray-800"
+                    variant="secondary"
+                    size="icon"
+                    round="full"
+                    className="text-gray-500 hover:text-gray-800 p-2"
                   >
                     <X size={20} />
-                  </button>
+                  </Button>
                 )}
               </div>
             )}

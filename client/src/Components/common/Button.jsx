@@ -9,24 +9,28 @@ const Button = forwardRef(
       type = 'button',
       variant = 'primary',
       size = 'md',
+      round = 'md',
       disabled = false,
       ...props
     },
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer';
+      'inline-flex items-center justify-center font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer';
 
     const variants = {
-      primary:
-        'bg-yellow-500 text-white shadow-lg hover:bg-yellow-600 focus:ring-yellow-400',
-      secondary:
-        'bg-gray-200 text-gray-900 shadow-sm hover:bg-gray-300 focus:ring-gray-400',
-      outline:
-        'border border-yellow-500 text-yellow-600 bg-transparent hover:bg-yellow-50 focus:ring-yellow-400',
-      danger:
-        'bg-red-500 text-white shadow-lg hover:bg-red-600 focus:ring-red-400',
-    };
+  primary:
+    'bg-yellow-500 text-white shadow-lg hover:bg-yellow-600 focus:ring-yellow-400',
+  secondary:
+    'bg-gray-200 text-gray-900 shadow-sm hover:bg-gray-300 focus:ring-gray-400',
+  outline:
+    'border border-yellow-500 text-yellow-600 bg-transparent hover:bg-yellow-50 focus:ring-yellow-400',
+  green:
+    'bg-green-600 text-white shadow-lg hover:bg-green-700 focus:ring-green-400',
+  danger:
+    'bg-red-500 text-white shadow-lg hover:bg-red-600 focus:ring-red-400',
+};
+
 
     const sizes = {
       sm: 'px-3 py-1.5 text-sm',
@@ -34,12 +38,26 @@ const Button = forwardRef(
       lg: 'px-7 py-3 text-lg',
     };
 
+    const rounds = {
+      none: 'rounded-none',
+      sm: 'rounded-md',
+      md: 'rounded-xl',
+      lg: 'rounded-2xl',
+      full: 'rounded-full',
+    };
+
     return (
       <button
         ref={ref}
         type={type}
         disabled={disabled}
-        className={clsx(baseStyles, variants[variant], sizes[size], className)}
+        className={clsx(
+          baseStyles,
+          variants[variant],
+          sizes[size],
+          rounds[round],
+          className
+        )}
         {...props}
       >
         {children}
@@ -47,6 +65,5 @@ const Button = forwardRef(
     );
   }
 );
-
 
 export default Button;

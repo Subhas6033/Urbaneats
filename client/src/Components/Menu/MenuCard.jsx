@@ -9,6 +9,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { addToCart, updateQuantity } from '../../Slice/OrderSlice.js';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../index';
 
 const MenuCard = ({ image, name, price, description }) => {
   const [quantity, setQuantity] = useState(0);
@@ -60,6 +61,7 @@ const MenuCard = ({ image, name, price, description }) => {
           className="w-full h-80 object-cover rounded-xl mb-4"
         />
       )}
+
       <h3 className="text-xl font-semibold text-emerald-600">{name}</h3>
 
       <div className="mt-2 text-gray-700 font-medium flex items-center gap-1">
@@ -72,50 +74,58 @@ const MenuCard = ({ image, name, price, description }) => {
 
       {quantity > 0 ? (
         <>
-          {/* Quantity Counter */}
+          {/*  Quantity Counter */}
           <div className="flex items-center gap-4 mt-4">
-            <button
+            <Button
               onClick={handleDecrease}
+              variant="secondary"
+              size="sm"
+              round="full"
               disabled={quantity === 1}
-              className={`p-2 rounded-full transition ${
-                quantity === 1
-                  ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-gray-200 hover:bg-gray-300'
-              }`}
+              className="p-2"
             >
               <Minus className="w-4 h-4" />
-            </button>
+            </Button>
 
             <span className="text-lg font-semibold">{quantity}</span>
 
-            <button
+            <Button
               onClick={handleIncrease}
-              className="p-2 rounded-full bg-emerald-500 text-white hover:bg-emerald-600"
+              variant="green"
+              size="sm"
+              round="full"
+              className="p-2"
             >
               <Plus className="w-4 h-4" />
-            </button>
+            </Button>
           </div>
 
-          {/* Total Price */}
+          {/*  Total Price */}
           <div className="mt-4 text-center font-bold text-gray-900 flex items-center justify-center gap-1">
             <IndianRupee className="w-4 h-4" /> {totalPrice}
           </div>
 
           {/* Go to Checkout */}
-          <button
+          <Button
             onClick={handleGoToCheckout}
-            className="mt-4 flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-all"
+            variant="primary"
+            size="md"
+            round="lg"
+            className="mt-4 flex items-center gap-2"
           >
             Proceed to Checkout <ArrowRight className="w-4 h-4" />
-          </button>
+          </Button>
         </>
       ) : (
-        <button
+        <Button
           onClick={handleAddToCart}
-          className="mt-4 flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-red-600 hover:cursor-pointer transition-all ease-in-out duration-500"
+          variant="danger"
+          size="md"
+          round="lg"
+          className="mt-4 flex items-center gap-2 transition-all ease-in-out duration-500"
         >
           <ShoppingCart className="w-4 h-4" /> Add to Cart
-        </button>
+        </Button>
       )}
     </div>
   );

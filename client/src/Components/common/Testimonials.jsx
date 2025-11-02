@@ -5,6 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Button from './Button'; // ✅ import your custom Button component
 
 const TestimonialCarousel = ({ images = [] }) => {
   const prevRef = useRef(null);
@@ -16,16 +17,16 @@ const TestimonialCarousel = ({ images = [] }) => {
         modules={[Navigation, Pagination, Autoplay]}
         spaceBetween={2}
         slidesPerView={1}
-        autoplay={{ delay: 1000, disableOnInteraction: false }}
+        autoplay={{ delay: 2500, disableOnInteraction: false }}
         pagination={{
-          clickable: true, 
+          clickable: true,
         }}
         navigation={{
           prevEl: prevRef.current,
           nextEl: nextRef.current,
         }}
         onInit={(swiper) => {
-          // ✅ attach custom navigation refs
+          // attach custom navigation refs
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
           swiper.navigation.init();
@@ -45,19 +46,26 @@ const TestimonialCarousel = ({ images = [] }) => {
           </SwiperSlide>
         ))}
 
-        {/* ✅ Custom Navigation Only */}
-        <button
+        {/* Custom Navigation Buttons using your Button component */}
+        <Button
           ref={prevRef}
-          className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black transition z-10"
+          variant="danger"
+          size="sm"
+          round="sm"
+          className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black transition z-10"
         >
-          <ChevronLeft size={24} />
-        </button>
-        <button
+          <ChevronLeft size={20} />
+        </Button>
+
+        <Button
           ref={nextRef}
-          className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black transition z-10"
+          variant="danger"
+          size="sm"
+          round="sm"
+          className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 text-white hover:bg-black transition z-10"
         >
-          <ChevronRight size={24} />
-        </button>
+          <ChevronRight size={20} />
+        </Button>
       </Swiper>
     </section>
   );
