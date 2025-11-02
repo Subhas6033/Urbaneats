@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser, logout } from '../Slice/AuthSlice';
 import { Button, Modal } from '../Components/index';
-import { MapPin, Package, Gift, Lock, LogOut, Loader2 } from 'lucide-react';
+import { MapPin, Package, Gift, Lock, LogOut } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -72,14 +72,25 @@ const Profile = () => {
 
   if (userError)
     return (
-      <div className="text-center mt-10 text-red-500">
-        <p>Error: {userError}</p>
-      </div>
+      <>
+        <div className="text-center mt-10 text-red-500">
+          <p>Error: {userError}</p>
+        </div>
+        <div className="text-center m-10">
+          <p className="text-gray-600 mb-3">You are not logged in.</p>
+          <Button
+            onClick={() => navigate('/user/login')}
+            className="bg-green-600 text-white px-6 py-2 rounded-md"
+          >
+            Go to Login
+          </Button>
+        </div>
+      </>
     );
 
   if (!user)
     return (
-      <div className="text-center mt-10">
+      <div className="text-center m-10">
         <p className="text-gray-600 mb-3">You are not logged in.</p>
         <Button
           onClick={() => navigate('/user/login')}
@@ -91,71 +102,137 @@ const Profile = () => {
     );
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* SIDEBAR */}
-      <aside className="w-72 bg-white border-r flex flex-col">
-        <div className="p-6 border-b">
-          <p className="text-gray-800 text-sm font-medium">
-            +91 - {user.mobileNumber || '91XXXXXXXXXX'}
-          </p>
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+      {/* SIDEBAR / TOP NAVIGATION */}
+      <aside className="w-full md:w-72 bg-white border-b md:border-r md:border-b-0">
+        {/* MOBILE TOP BAR */}
+        <div className="block md:hidden">
+          <div className="flex items-center justify-between p-4 border-b">
+            <p className="text-gray-800 text-sm font-medium truncate">
+              +91 - {user.mobileNumber || '91XXXXXXXXXX'}
+            </p>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-sm text-gray-700 hover:text-red-600 transition"
+            >
+              <LogOut size={16} /> Logout
+            </button>
+          </div>
+
+          {/* MOBILE NAVIGATION */}
+          <nav className="flex justify-around items-center px-2 py-3 space-x-2 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('addresses')}
+              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
+                activeTab === 'addresses'
+                  ? 'text-green-700 border-b-2 border-green-700'
+                  : 'text-gray-600 hover:text-green-700'
+              }`}
+            >
+              <MapPin size={16} /> <span>Addresses</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
+                activeTab === 'orders'
+                  ? 'text-green-700 border-b-2 border-green-700'
+                  : 'text-gray-600 hover:text-green-700'
+              }`}
+            >
+              <Package size={16} /> <span>Orders</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('gifts')}
+              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
+                activeTab === 'gifts'
+                  ? 'text-green-700 border-b-2 border-green-700'
+                  : 'text-gray-600 hover:text-green-700'
+              }`}
+            >
+              <Gift size={16} /> <span>Gifts</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('privacy')}
+              className={`flex flex-col items-center gap-1 px-2 py-1 text-xs font-medium transition ${
+                activeTab === 'privacy'
+                  ? 'text-green-700 border-b-2 border-green-700'
+                  : 'text-gray-600 hover:text-green-700'
+              }`}
+            >
+              <Lock size={16} /> <span>Privacy</span>
+            </button>
+          </nav>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          <button
-            onClick={() => setActiveTab('addresses')}
-            className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition ${
-              activeTab === 'addresses'
-                ? 'bg-green-50 text-green-700'
-                : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-            }`}
-          >
-            <MapPin size={18} /> My Addresses
-          </button>
+        {/* DESKTOP SIDEBAR */}
+        <div className="hidden md:flex flex-col h-full">
+          <div className="p-6 border-b">
+            <p className="text-gray-800 text-sm font-medium truncate">
+              +91 - {user.mobileNumber || '91XXXXXXXXXX'}
+            </p>
+          </div>
+
+          <nav className="flex-1 px-4 py-6 space-y-2">
+            <button
+              onClick={() => setActiveTab('addresses')}
+              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
+                activeTab === 'addresses'
+                  ? 'bg-green-50 text-green-700'
+                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              }`}
+            >
+              <MapPin size={18} /> My Addresses
+            </button>
+
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
+                activeTab === 'orders'
+                  ? 'bg-green-50 text-green-700'
+                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              }`}
+            >
+              <Package size={18} /> My Orders
+            </button>
+
+            <button
+              onClick={() => setActiveTab('gifts')}
+              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
+                activeTab === 'gifts'
+                  ? 'bg-green-50 text-green-700'
+                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              }`}
+            >
+              <Gift size={18} /> E-Gift Cards
+            </button>
+
+            <button
+              onClick={() => setActiveTab('privacy')}
+              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition hover:cursor-pointer ${
+                activeTab === 'privacy'
+                  ? 'bg-green-50 text-green-700'
+                  : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              }`}
+            >
+              <Lock size={18} /> Account privacy
+            </button>
+          </nav>
 
           <button
-            onClick={() => setActiveTab('orders')}
-            className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition ${
-              activeTab === 'orders'
-                ? 'bg-green-50 text-green-700'
-                : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-            }`}
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-6 py-4 border-t text-gray-700 hover:bg-red-50 hover:text-red-600 transition hover:cursor-pointer font-medium"
           >
-            <Package size={18} /> My Orders
+            <LogOut size={18} /> Logout
           </button>
-
-          <button
-            onClick={() => setActiveTab('gifts')}
-            className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition ${
-              activeTab === 'gifts'
-                ? 'bg-green-50 text-green-700'
-                : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-            }`}
-          >
-            <Gift size={18} /> E-Gift Cards
-          </button>
-
-          <button
-            onClick={() => setActiveTab('privacy')}
-            className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left font-medium transition ${
-              activeTab === 'privacy'
-                ? 'bg-green-50 text-green-700'
-                : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
-            }`}
-          >
-            <Lock size={18} /> Account privacy
-          </button>
-        </nav>
-
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-6 py-4 border-t text-gray-700 hover:bg-red-50 hover:text-red-600 transition font-medium"
-        >
-          <LogOut size={18} /> Logout
-        </button>
+        </div>
       </aside>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 flex flex-col items-center justify-center p-10">
+      <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-10">
         {activeTab === 'addresses' && (
           <>
             {addressList.length === 0 ? (
@@ -163,7 +240,7 @@ const Profile = () => {
                 <h2 className="text-lg font-semibold text-gray-800">
                   You have no saved addresses
                 </h2>
-                <p className="text-gray-500 mt-1 mb-6">
+                <p className="text-gray-500 mt-1 mb-6 text-sm md:text-base">
                   Tell us where you want your orders delivered
                 </p>
                 <button className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition">
@@ -191,19 +268,19 @@ const Profile = () => {
         )}
 
         {activeTab === 'orders' && (
-          <div className="text-center text-gray-600">
+          <div className="text-center text-gray-600 text-sm md:text-base">
             <p>You have no recent orders.</p>
           </div>
         )}
 
         {activeTab === 'gifts' && (
-          <div className="text-center text-gray-600">
+          <div className="text-center text-gray-600 text-sm md:text-base">
             <p>No gift cards available.</p>
           </div>
         )}
 
         {activeTab === 'privacy' && (
-          <div className="text-center text-gray-600">
+          <div className="text-center text-gray-600 text-sm md:text-base">
             <p>Manage your account privacy settings here.</p>
           </div>
         )}

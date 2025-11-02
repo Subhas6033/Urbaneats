@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-
 import { User } from '../Models/user.models.js';
 import {
   APIERROR,
@@ -7,6 +6,14 @@ import {
   asyncHandeler,
   sendEmail,
 } from '../Utils/index.js';
+
+// Cookie-options
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production' ? true : false,
+  sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+  path: '/',
+};
 
 // TOKEN GENERATION
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -23,7 +30,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 // Register the Users
-
 const registerUser = asyncHandeler(async (req, res) => {
   console.log('Register Request Body:', req.body);
   const { userName, email, mobileNumber, password } = req.body;
@@ -62,11 +68,7 @@ const registerUser = asyncHandeler(async (req, res) => {
   );
   const { accessToken } = await generateAccessAndRefreshTokens(user._id);
 
-  res.cookie('accessToken', accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-  });
+  res.cookie('accessToken', accessToken, cookieOptions);
 
   if (!createdUser) {
     throw new APIERROR(502, 'Internal Server Error while creating the user');
@@ -130,19 +132,9 @@ const loginUser = asyncHandeler(async (req, res) => {
 
   // Set token in cookies
   try {
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production' ? true : false,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
-    });
+    res.cookie('accessToken', accessToken, cookieOptions);
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production' ? true : false,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
-    });
+    res.cookie('refreshToken', refreshToken, cookieOptions);
   } catch (error) {
     console.log("Can't set the cookies", error);
   }
