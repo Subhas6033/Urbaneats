@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema(
       default: 'customer',
     },
     refreshToken: String,
+    // select: false, //Hise the token
   },
   { timestamps: true }
 );
@@ -70,6 +71,19 @@ userSchema.methods.generateRefreshToken = function () {
   return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
   });
+};
+
+// Hash the Refresh Token
+userSchema.methods.hashRefreshToken = async function (plainToken) {
+  const salt = await bcrypt.genSalt(10);
+  const hashedToken = await bcrypt.hash(plainToken, salt);
+  this.refreshToken = hashedToken;
+  return this.refreshToken;
+};
+
+// Compare the provided token with the save token
+userSchema.methods.compareToken = async function (plaintoken) {
+  return await bcrypt.compare(plaintoken, this.refreshToken);
 };
 
 export const User = mongoose.model('User', userSchema);
