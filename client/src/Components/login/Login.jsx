@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login, resetAuthState, getUser } from '../../Slice/AuthSlice';
 import { useForm } from 'react-hook-form';
 
-// 🔔 Toast Component
+//  Toast Component
 function Toast({ message, type, onClose, showClose = false }) {
   if (!message) return null;
 
@@ -40,7 +40,7 @@ function Toast({ message, type, onClose, showClose = false }) {
   );
 }
 
-// 💳 Card Components
+//  Card Components
 const Card = ({ children, className = '' }) => (
   <div
     className={`bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-orange-100 ${className}`}
@@ -53,12 +53,12 @@ const CardContent = ({ children, className = '' }) => (
   <div className={`p-10 ${className}`}>{children}</div>
 );
 
-// 🚀 Main Login Component
+//  Main Login Component
 export default function LoginComp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 🧩 Extract modular login state
+  //  Extract modular login state
   const {
     login: { status: loginStatus, loading: loginLoading, error: loginError },
     getUser: { status: userStatus, error: userError },
@@ -73,22 +73,20 @@ export default function LoginComp() {
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: { email: '', password: '' } });
 
-  // 🔐 Handle Login Submit
+  //  Handle Login Submit
   const onSubmit = async (data) => {
     dispatch(login(data));
-    console.log('Succesfully logged in', data);
   };
 
-  // 🎯 Handle login + redirect + toast
+  //  Handle login + redirect + toast
   useEffect(() => {
     if (loginStatus === 'success') {
       setToast({ message: 'Successfully logged in 🎉', type: 'success' });
 
-      // ✅ Wait for user to be fetched from backend
+      // Wait for user to be fetched from backend
       dispatch(getUser())
         .unwrap()
         .then((fetchedUser) => {
-          console.log('✅ User fetched:', fetchedUser);
 
           // Delay navigation slightly so toast can show
           setTimeout(() => {
@@ -99,7 +97,7 @@ export default function LoginComp() {
               navigate('/user/signup');
             }
 
-            // ✅ Reset the login slice and clear toast
+            //  Reset the login slice and clear toast
             dispatch(resetAuthState('login'));
             setToast({ message: '', type: '' });
           }, 1500);
